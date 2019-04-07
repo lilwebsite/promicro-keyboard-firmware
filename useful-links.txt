@@ -1,0 +1,38 @@
+write your own keyboard firmware:
+	ergodox firmware for teensy 2.0, uses same chip as pro micro, extremely useful reference
+	-> https://github.com/benblazak/ergodox-firmware
+	
+	from the same repository as above, this file is full of useful links
+	-> https://github.com/benblazak/ergodox-firmware/blob/master/references.md
+	
+	USB HID driver for the device, the version in my project is a modified version of this
+	-> https://www.pjrc.com/teensy/usb_keyboard.html
+	
+	ATmega32u4 datasheet, tells you everything you need to know about AVR development (non arduino)
+	-> http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7766-8-bit-AVR-ATmega16U4-32U4_Datasheet.pdf
+
+	tool for creating USB HID descriptors (useful for creating extra descriptors to handle keys such as vol up/down)
+	-> https://www.usb.org/document-library/hid-descriptor-tool
+	
+	pro micro pin layout
+	-> https://cdn.sparkfun.com/datasheets/Dev/Arduino/Boards/ProMicro16MHzv1.pdf
+	
+	demultiplexer datasheet
+	-> https://html.alldatasheet.com/html-pdf/27373/TI/SN74159N/22/1/SN74159N.html
+
+understanding USB bootloader:
+	useful info on how a bootloader works and how to write one
+	-> https://www.avrfreaks.net/forum/faq-c-writing-bootloader-faq?page=all%C2%A0
+	
+	USB descriptor info
+	-> https://www.engineersgarage.com/articles/usb-descriptors-and-their-types-part-36?PageSpeed=noscript
+	
+	ATMEL document on specifics for interacting with a DFU(Device Firmware Upgrade) bootloader from the host
+	-> http://ww1.microchip.com/downloads/en/DeviceDoc/doc7618.pdf
+	
+	similar document to the ATMEL DFU bootloader document
+	-> https://cscott.net/usb_dev/data/devclass/usbdfu10.pdf
+	
+	LUFA is a USB driver for many devices including AVR8 based devices
+	quite useful for understanding how USB commuication is done with C on a AVR device
+	-> http://www.fourwalledcubicle.com/LUFA.php

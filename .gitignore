@@ -1,0 +1,5 @@
+*.backup
+*.elf
+*.map
+*.hex
+*.o
