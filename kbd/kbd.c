@@ -149,11 +149,7 @@ void functions(void)
 			{standby_switch(); continue;}
 			
 			if(standby)
-			{
-				reset_sending();
-				kbsend();
-				continue;
-			}
+			{continue;}
 			//
 			
 			//double zero key
@@ -238,6 +234,12 @@ int main(void)
 			
 			#ifdef __USER
 			functions();//figure out if theres something we have to run first
+			if(standby)
+			{
+				reset_sending();
+				kbsend();
+				continue;
+			}
 			#endif
 			
 			press_release();
