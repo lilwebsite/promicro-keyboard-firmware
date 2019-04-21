@@ -147,6 +147,13 @@ void functions(void)
 			if(keypress.row == standby_sw.row 
 			&& keypress.column == standby_sw.column)
 			{standby_switch(); continue;}
+			
+			if(standby)
+			{
+				reset_sending();
+				kbsend();
+				continue;
+			}
 			//
 			
 			//double zero key
@@ -231,12 +238,6 @@ int main(void)
 			
 			#ifdef __USER
 			functions();//figure out if theres something we have to run first
-			if(standby)
-			{
-				reset_sending();
-				kbsend();
-				continue;
-			}
 			#endif
 			
 			press_release();
