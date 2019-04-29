@@ -8,7 +8,17 @@ This program is a firmware driver for keyboards, at the moment only supporting t
 
 This program was written to work with the Pingmaster, but there are many keyboards that can work using this firmware so it is possible to use it on most keyboards, with a few modifications. Feel free to use this software for whatever you like, everything is MIT licensed.
 
-I started writing this program since I had many issues with existing methods for converting the Pingmaster (such as converting or using a drop in replacement) and after trying many different methods for getting the pro micro to work with the Pingmaster I decided to write my own firmware. This dosen't necessarily mean that this program is the best method for modding the Pingmaster, it is likely easier to use TMK converter and just be done with it, but I wanted to upload this project regardless since I think the information may prove useful to anyone who would like to know more about the Pingmaster, or keyboards in general. Although I'm not sure if anyone will be using this firmware, I will continue developing / updating it, since I have had quite a bit of fun creating this project. For those of you interested, please do enjoy the firmware I have created, and feel free to add feature requests.
+## Features
+- Supports NKRO **[1]**
+- Supports built in macros
+- Layer support
+- Supports media keys, such as mute, volume up/down, pause/play, etc
+- Firmware is easily updated, via DFU bootloader and a reset switch
+
+**[1]** Technically supports N-key rollover, with up to 62 simultaneous keys plus all modifier keys being pressed at once. This limit can be raised to 126, for true NKRO, but I found it unessecary.
+
+## About
+I started writing this program since I had many issues with existing methods for converting the Pingmaster with the pro micro (such as converting or using a drop in replacement) and after trying many different methods for getting it to work with the Pingmaster I decided to write my own firmware. This dosen't necessarily mean that this program is the best method for modding the Pingmaster, it is likely easier to use TMK converter and just be done with it, but I wanted to upload this project regardless since I think the information may prove useful to anyone who would like to know more about the Pingmaster, or keyboards in general, as well as how to write firmware for the ATmega32U4 chip. Although I'm not sure if anyone will be using this firmware, I will continue developing / updating it, since I have had quite a bit of fun creating this project. For those of you interested, please do enjoy the firmware I have created, and feel free to add feature requests.
 
 v1.0
 only support for IBM Pingmaster
