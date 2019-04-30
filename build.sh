@@ -2,32 +2,25 @@
 
 FLASH_ERR='no'
 MAKE_ERR='no'
-
-if [ ! $FLASH_DFU ]
-then
-	FLASH_DFU='yes'
-fi
-
-if [ ! $NOCLEAN ]
-then
-	NOCLEAN='no'
-fi
-
-if [ ! $FLASH_DEVICE ]
-then
-	FLASH_DEVICE='no'
-fi
-
-if [ ! $FLASH_BOOTLOADER ]
-then
-	FLASH_BOOTLOADER='no'
-fi
+FLASH_DFU='yes'
+NOCLEAN='no'
+FLASH_DEVICE='no'
+FLASH_BOOTLOADER='no'
+COMPILE='no'
+DEBUG='no'
 
 _usage ()
 {
 	echo "usage ${0} [options]"
 	echo
-	echo "-N		Run without 'make clean'"
+	echo "running this script without any options will compile the .hex"
+	echo "file if it doesn't exist, or if it does eixst, it will print out the binary size"
+	echo
+	echo "-C		Compile the firmware"
+	echo "			 Default: ${COMPILE}"
+	echo "-G		Compile the program in debug mode"
+	echo "			 Default: ${DEBUG}"
+	echo "-N		Compile without 'make clean'"
 	echo "			 Default: ${NOCLEAN}"
 	echo "-D		Flash with a DFU bootloader instead of an ISP programmer"
 	echo "			 Default: ${FLASH_DFU}"
@@ -35,14 +28,13 @@ _usage ()
 	echo "			 Default: ${FLASH_DEVICE}"
 	echo "-B		Flash the device with a bootloader (overrides all options, requires ISP programmer)"
 	echo "			 Default: ${FLASH_BOOTLOADER}"
-	echo "-G		Compile the program in debug mode"
-	echo "			 Default: no"
 	echo "-h		This help message"
 	exit ${1}
 }
 
-while getopts 'NDFBGh' arg; do
+while getopts 'CNDFBGh' arg; do
 	case "${arg}" in
+		C) COMPILE='yes' ;;
 		N) NOCLEAN='yes' ;;
 		D) FLASH_DFU='no' ;;
 		F) FLASH_DEVICE='yes' ;;
@@ -62,13 +54,13 @@ then
 	exit $?
 fi
 
-if [ $NOCLEAN = 'no' ]
+if [ $NOCLEAN = 'no' -a $COMPILE = 'yes' -o ! -f 'kbd.hex' ]
 then
 	make fullclean
 fi
 
 export DEBUG
-make
+if [ ! -f 'kbd.hex' ]; then make; fi
 if [ ! $? -eq 0 ]; then MAKE_ERR='yes'; fi
 
 if [ $MAKE_ERR = 'no' -a $FLASH_DEVICE = 'yes' ]
@@ -78,6 +70,10 @@ then
 	then
 		HICCUP='no'
 		FLASH_ERR='yes'
+		echo
+		echo "Flash will begin in a moment, press the reset switch now."
+		echo
+		sleep 1.5s
 		for (( x=1; x<=4; x++ ))
 		do
 			sleep 0.5s

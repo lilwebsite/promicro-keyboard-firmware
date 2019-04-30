@@ -19,7 +19,7 @@ DUMP=dump.hex
 #keyboard definitions
 #
 #as far as im aware, 126(+2 for modifier keys) is max key rollover with single buffer endpoint
-#KEY_ROLLOVER takes up N*3 bytes of RAM (104 * 3 = 312 bytes, for example)
+#KEY_ROLLOVER takes up N*3 bytes of RAM (104 * 3 = 312 bytes, for example) and cannot be higher than the ENDPOINT_SIZE
 KEY_ROLLOVER=64
 DEMUX_OUT=16
 DEMUX_IN=4
@@ -111,7 +111,7 @@ launch:
 	$(DFU) launch
 endif
 
-finish: $(BIN).hex
+finish:
 ifneq ($(MAKE_ERR), no)
 	@echo
 	@echo 'make failed and was unable to generate hex file'
@@ -134,6 +134,6 @@ else
 endif
 endif
 	@echo "// // // // // // // // // // // // // // //"
-	avr-size $<
+	avr-size kbd.hex
 	@echo "// // // // // // // // // // // // // // //"
 endif
