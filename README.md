@@ -31,7 +31,7 @@ If you bring your attention to the graphical layouts below, the first layer nump
 
 ### Macro information
 
-- **standby key** The standby key is just a toggle button that when pressed no other key can be pressed except standby, so if you don't want your computer taking a bunch of input from the keyboard you can press said key to disable the keyboard. I find it pretty useful since they keys on the pingmaster are quite sensitive.
+- **standby key** The standby key is just a toggle button that when pressed no other key can be pressed except standby, so if you don't want your computer taking a bunch of input from the keyboard you can press said key to disable the keyboard. I find it pretty useful since the keys on the pingmaster are quite sensitive.
 - **layer cycle key** The layer cycle key will cycle through the layers, in this case since there are 2 layers it will toggle between them, but it can be used to cycle through any amount of layers.
 - **00 key** This key is quite simple, it just spits out two zeros.
 - **left shift + right shift** When left and right shift are pressed at the same time, it sends a capslock key scancode instead of a shiftkey scancode.
