@@ -111,7 +111,7 @@
 //Media key codes are not real scan codes, they must be translated to a 16
 //bit number using a lookup table which is defined below
 //
-//NEEDS TO BE DEFINED IN ORDER OF THE CONSUMER_LOOKUP ARRAY
+//NEEDS TO BE DEFINED IN ORDER OF THE ENTRIES IN THE CONSUMER_LOOKUP ARRAY
 //you can find that array in usb_keyboard.h
 #define PLAY_PAUSE		0x00
 #define STOP			0x01
@@ -120,3 +120,9 @@
 #define MUTE			0x04
 #define VOL_UP			0x05
 #define VOL_DOWN		0x06
+
+//idicates a layer toggle button
+#define L_TOGGLE1	0xF0
+#define L_TOGGLE2	0xF1
+#define L_TOGGLE3	0xF2
+#define L_TOGGLE4	0xF3

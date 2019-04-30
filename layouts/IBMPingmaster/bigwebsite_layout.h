@@ -28,6 +28,7 @@
 #define DEL KEY_DELETE
 #define BACKSLASH KEY_BACKSLASH
 #define NUMLOCK KEY_NUM_LOCK
+#define CAPS KEY_CAPS_LOCK
 
 //new defines
 #define VOL_UP 0x05
@@ -57,12 +58,12 @@ const struct kblayer PROGMEM kblayer_list[LAYERS] = {
 			0,			KEY_F12,	BACKSPACE,	KEY_LEFT,	KEY_RIGHT,	KEY_DOWN,	KEY_F10,	0,			//12 {E18, F12, backspace, left, right, down, F10, E14}
 			KEY_UP,		KEY_5,		KEY_F2,		KEY_F6,		KEY_F9,		KEY_1,		KEY_F7,		KEY_F3,		//13 {up, numpad 5, F2, F6, F9, numpad 1, F7, F3}
 			KEY_HOME,	KEY_7,		KEY_F1,		KEY_F5,		KEY_4,		KEY_2,		KEY_F8,		KEY_F4,		//14 {home, numpad 7, F1, F5, numpad 4, numpad 2, F8, F4}
-			KEY_END,	KEY_8,		DEL,		KEY_9,		KEY_6,		KEY_3,		0,			0			//15 {end, numpad 8, del, numpad 9, numpad 6, numpad 3, E19, E20}
+			KEY_END,	KEY_8,		DEL,		KEY_9,		KEY_6,		KEY_3,		0,			L_TOGGLE1	//15 {end, numpad 8, del, numpad 9, numpad 6, numpad 3, E19, E20}
 		)
 	},
 	
 	{
-		1,//secondary layer
+		1,//secondary layer, or "gaming mode" (no win-key, no standby button, numpad is normal numpad except for 00)
 		MATRIX_POS(
 			0,//NC = not connected, automatically assigned
 			//base matrix layer config
@@ -71,10 +72,10 @@ const struct kblayer PROGMEM kblayer_list[LAYERS] = {
 									KEY_3,		KEY_E,		KEY_D,		KEY_X,		KEY_Q,		KEY_1,		//1
 									KEY_4,		KEY_R,		KEY_F,		KEY_C,					LCTRL,		//2
 									KEY_5,		KEY_T,		KEY_G,		KEY_V,		LSHIFT,		KEY_A,		//3
-									KEY_6,		KEY_Y,		KEY_H,		KEY_B,		LEFT_GUI,	0,			//4
+									KEY_6,		KEY_Y,		KEY_H,		KEY_B,		0,			CAPS,		//4
 									KEY_7,		KEY_U,		KEY_J,		KEY_N,					LEFT_ALT,	//5
 									KEY_8,		KEY_I,		KEY_K,		KEY_M,		KEY_SPACE,	0,			//6
-									KEY_9,		KEY_O,		KEY_L,		COMMA,		RIGHT_GUI,	RIGHT_ALT,	//7
+									KEY_9,		KEY_O,		KEY_L,		COMMA,		0,			RIGHT_ALT,	//7
 									KEY_0,		KEY_P,		KEY_SEMI,	PERIOD,		KEYPAD_0,	ENTER,		//8
 									KEY_EQUAL,	KEY_MINUS,	KEY_QUOTE,	KEY_SLASH,	PAGE_UP,	KP_PERIOD,	//9
 									KEY_TILDE,	LBRACE,		RBRACE,		PRTSCN,		PAGE_DOWN,	0,			//10
@@ -82,7 +83,7 @@ const struct kblayer PROGMEM kblayer_list[LAYERS] = {
 			0,			KEY_F12,	BACKSPACE,	KEY_LEFT,	KEY_RIGHT,	KEY_DOWN,	KEY_F10,	0,			//12
 			KEY_UP,		KEYPAD_5,	KEY_F2,		KEY_F6,		KEY_F9,		KEYPAD_1,	KEY_F7,		KEY_F3,		//13
 			KEY_HOME,	KEYPAD_7,	KEY_F1,		KEY_F5,		KEYPAD_4,	KEYPAD_2,	KEY_F8,		KEY_F4,		//14
-			KEY_END,	KEYPAD_8,	DEL,		KEYPAD_9,	KEYPAD_6,	KEYPAD_3,	0,			0			//15
+			KEY_END,	KEYPAD_8,	DEL,		KEYPAD_9,	KEYPAD_6,	KEYPAD_3,	0,			L_TOGGLE1	//15
 		)
 	}
 };

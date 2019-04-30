@@ -24,8 +24,16 @@ struct kblayer
 
 struct kblayer_key
 {
-	const uint8_t layer;//target layer
+	uint8_t layer;//target layer
 	struct keystate key;//row, column, is layer active
+};
+
+struct kblayer_cycle
+{
+	struct kblayer_key lk;
+	const uint8_t count;
+	uint8_t current;
+	uint8_t layers[];
 };
 
 struct pin

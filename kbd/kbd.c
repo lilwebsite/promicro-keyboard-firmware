@@ -16,23 +16,41 @@ uint8_t get_layer_key(uint8_t layer_num, uint8_t row, uint8_t column)
 		{
 			if(pgm_read_byte(&(kblayer_list[x].layer)) == layer_num)
 			{return pgm_read_byte(&(kblayer_list[x].matrix[row][column]));}
-			//{return pgm_read_byte(&(kblayer_list[x].layer_addr[row][column]));}
-			//{return ((const uint8_t)pgm_read_byte(kblayer_list[x].layer_addr))[row][column];}
 		}
 	}
 	return 0;
 }
 
+void layer_cycle(void)
+{
+	get_last_layer();
+	for(uint8_t x = 0; x < COLUMNS; x++)
+	{
+		struct keystate keypress = currently_pressing[x];//get the current key
+		if(keypress.pressed)//is the current key being pressed
+		{
+			if(cycle.lk.key.row == keypress.row
+			&& cycle.lk.key.column == keypress.column)//if the key being pressed is a layer key
+			{
+				if(cycle.current >= cycle.count-1)
+				{cycle.current = 0;}
+				else
+				{cycle.current++;}
+				cycle.lk.layer = cycle.layers[cycle.current];
+				update_layers(&cycle.lk);
+				//cycle delay
+				_delay_ms(200);
+				break;
+			}
+		}
+	}
+	return;
+}
+
 void layer_select(void)
 {
-	uint8_t x = 0;
-	struct kblayer_key *last_layer;//points to a layer in layer_keys array
-	for(; x < LAYERS; x++)
-	{
-		if(layer_keys[x].key.pressed)
-		{last_layer = &layer_keys[x];}//we wana work with this layer as last layer
-	}
-	for(x = 0; x < COLUMNS; x++)
+	get_last_layer();//points to a layer in layer_keys array
+	for(uint8_t x = 0; x < COLUMNS; x++)
 	{
 		struct keystate keypress = currently_pressing[x];//get the current key
 		if(keypress.pressed)//is the current key being pressed
@@ -44,11 +62,7 @@ void layer_select(void)
 				{
 					if(layer_keys[z].layer == last_layer->layer)
 					{continue;}//if the layer key being pressed is the same as the last layer ignore it
-					
-					//update the layer keys
-					layer_keys[z].key.pressed = 1;
-					last_layer->key.pressed = 0;
-					layer = &layer_keys[z];//end with setting the current layer to what was pressed
+					update_layers(&layer_keys[z]);
 					break;
 				}
 			}
@@ -64,7 +78,6 @@ void press_release(void)
 	uint8_t found;
 	for(uint8_t x = 0; x < COLUMNS; x++)
 	{
-		//uint8_t current_key = pgm_read_byte(&(primary_layer.matrix[currently_pressing[x].row][currently_pressing[x].column]));//read keycode from program space
 		if(!get_layer_key(layer->layer, 0xFF, 0xFF))//if this evaluates to 0, something went terribly wrong or the layer does not exist
 		{return;}
 		struct keypress current_key = {
@@ -145,7 +158,8 @@ void functions(void)
 			////////////////////////////////////////////////////
 			//standby will 'turn off' keyboard using the RESET key
 			if(keypress.row == standby_sw.row 
-			&& keypress.column == standby_sw.column)
+			&& keypress.column == standby_sw.column
+			&& !layer->layer)//if not on layer 0, this will not execute
 			{standby_switch(); continue;}
 			
 			if(standby)
@@ -159,7 +173,7 @@ void functions(void)
 			//
 			
 			//CAPSLOCK on both SHIFTL and SHIFTR press
-			if(shiftkey(keypress))
+			if(shift_key(keypress))
 			{
 				if(shiftcaps.row == default_state.row
 				&& shiftcaps.column == default_state.column)
@@ -172,8 +186,19 @@ void functions(void)
 			//
 			
 			//volume up/down buttons
-			if(volumekey(keypress))
-			{volume(volumekey(keypress));}
+			if(volume_key(keypress))
+			{volume(volume_key(keypress)); continue;}
+			//
+			
+			//prev/next track buttons
+			if(prevnext_key(keypress))
+			{next_prev_track(prevnext_key(keypress)); continue;}
+			//
+			
+			//play/pause button
+			if(keypress.row == play_pause.row
+			&& keypress.column == play_pause.column)
+			{play_pause_media(); continue;}
 			//
 		}
 	}
@@ -193,8 +218,12 @@ int main(void)
 	}
 	
 	_delay_ms(250);//startup delay
+	#if defined ENABLE_LAYER_TOGGLE && ! defined ENABLE_LAYER_KEYS
+	layer = &cycle.lk;
+	#else
 	layer_keys[0].key.pressed = 1;
 	layer = &layer_keys[0];//selects the primary layer as default
+	#endif
 	usb_keyboard_press(NUMLOCK, 0);//default to numlock on
 	while(1)//main program
 	{
@@ -230,7 +259,12 @@ int main(void)
 			
 			setup_keys();//figure out what is being pressed in the row
 			
+			#ifdef ENABLE_LAYER_KEYS
 			layer_select();//if any of the layer keys were pressed this changes the variable layer
+			#endif
+			#ifdef ENABLE_LAYER_TOGGLE
+			layer_cycle();//if any of the layer cycle keys were pressed this will iterate through the specified layers
+			#endif
 			
 			#ifdef __USER
 			functions();//figure out if theres something we have to run first
