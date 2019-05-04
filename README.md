@@ -3,7 +3,7 @@ Keyboard firmware written in C using avr-libc, designed for the pro micro MCU (A
 
 # What this is
 
-![IBMPingmaster keyboard](https://bigwebsite.cool/content/IBMPingmaster.jpg)
+![IBMPingmaster keyboard](https://bigwebsite.cool/github/IBMPingmaster.jpg)
 This program is a firmware driver for keyboards, at the moment only supporting the IBM Pingmaster line of keyboards, and is used to make promicro or similar a drop in replacement for the existing microcontroller attached to the keyboard.
 
 This program was written to work with the Pingmaster, but there are many keyboards that can work using this firmware so it is possible to use it on most keyboards, with a few modifications. Feel free to use this software for whatever you like, everything is MIT licensed.
