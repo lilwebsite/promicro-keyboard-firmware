@@ -5,47 +5,14 @@
 
 #include "../LAYOUT_SELECT.h"
 
+volatile uint8_t DRIVER_ROWS = 1; //driver rows is used by whichever chip we are driving the board with
+#include "../drivers/driver.h"
+
 #define ENABLE_LAYER_TOGGLE
 //#define ENABLE_LAYER_KEYS
 #if defined ENABLE_LAYER_KEYS || defined ENABLE_LAYER_TOGGLE
 #define __LAYERS
 #endif
-
-///////////////
-//USEFUL INFO//
-///////////////
-//		pro micro pin layout -> https://cdn.sparkfun.com/datasheets/Dev/Arduino/Boards/ProMicro16MHzv1.pdf
-//
-//		demultiplexer datasheet -> https://html.alldatasheet.com/html-pdf/27373/TI/SN74159N/22/1/SN74159N.html
-//								OR
-//								search for SN74159N
-
-static uint8_t DEMUX_BITS = 1;
-
-//const pin definitions not required for PORTF as it can be set using bit operations
-//any other pin layout needs to have pin definitions
-//
-//static const struct pin demux_pins[DEMUX_IN] = {{B, 1}, {B, 3}, {B, 2}, {B, 6}};//A, B, C, D (pins 15, 14, 16, 10)
-//static const struct pin demux_pins[DEMUX_IN] = {{F, 4}, {F, 5}, {F, 6}, {F, 7}};//A, B, C, D (pins A0, A1, A2, A3)
-
-//scanvalues used to check each row 0 - 15 (for a 4 to 16 line demultiplexer)
-//DCBA
-//0000 - x . . . . . . . . . . . . . . .
-//0001 - . x . . . . . . . . . . . . . .
-//0010 - . . x . . . . . . . . . . . . .
-//0011 - . . . x . . . . . . . . . . . .
-//0100 - . . . . x . . . . . . . . . . .
-//0101 - . . . . . x . . . . . . . . . .
-//0110 - . . . . . . x . . . . . . . . .
-//0111 - . . . . . . . x . . . . . . . .
-//1000 - . . . . . . . . x . . . . . . .
-//1001 - . . . . . . . . . x . . . . . .
-//1010 - . . . . . . . . . . x . . . . .
-//1011 - . . . . . . . . . . . x . . . .
-//1100 - . . . . . . . . . . . . x . . .
-//1101 - . . . . . . . . . . . . . x . .
-//1110 - . . . . . . . . . . . . . . x .
-//1111 - . . . . . . . . . . . . . . . x
 
 static volatile struct kbstate kbd = {0, 0, 0, 0};//last state, current state, row state, has state changed
 static volatile uint8_t ispressed[COLUMNS];

@@ -210,12 +210,8 @@ int main(void)
 	while(!init_promicro());
 	usb_init();
 	while(!usb_configured());
-
-	for(uint8_t x = 0; x < DEMUX_IN - 1; x++)
-	{
-		DEMUX_BITS = (DEMUX_BITS<<1);
-		DEMUX_BITS++;
-	}
+	
+	init_driver();
 	
 	_delay_ms(250);//startup delay
 	#if defined ENABLE_LAYER_TOGGLE && ! defined ENABLE_LAYER_KEYS
@@ -233,12 +229,12 @@ int main(void)
 		if(kbd.changed){kbsend();}//if the keyboard state has changed send the keys
 		kbd.state = 0;
 
-		for(row = 0; row <= DEMUX_BITS; row++)
+		for(row = 0; row <= DRIVER_ROWS; row++)//the amount of driver rows is decided by the selected driver in drivers/driver.h
 		{
 			kbd.row_state = 0;
 			readthepin = 0;//reads a pin bit
-			PORTF = u4_reverse(row)<<4;//sets demux line, u4 switches from LSB to MSB for unsigned 4bit numbers
-			//							[programmer note]: more complex logic is required for pins that are not on same port or not aligned next to each other in order
+			
+			set_row(row);
 			
 			for(x = 0; x < COLUMNS; x++)
 			{
