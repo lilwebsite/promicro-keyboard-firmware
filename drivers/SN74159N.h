@@ -1,11 +1,13 @@
+//SN74159N is a 4 to 16 line demultiplexer
+
 ///////////////
 //USEFUL INFO//
 ///////////////
 //		pro micro pin layout -> https://cdn.sparkfun.com/datasheets/Dev/Arduino/Boards/ProMicro16MHzv1.pdf
 //
 //		demultiplexer datasheet -> https://html.alldatasheet.com/html-pdf/27373/TI/SN74159N/22/1/SN74159N.html
-//								OR
-//								search for SN74159N
+//		OR
+//		search for SN74159N
 
 //scanvalues used to check each row 0 - 15 (for a 4 to 16 line demultiplexer)
 //DCBA
@@ -46,15 +48,13 @@
 	{1, 1, 1, 1}\
 }
 
-//PORTF = u4_reverse(row)<<4;//sets demux line, u4 switches from LSB to MSB for unsigned 4bit numbers
-
 //static const struct pin demux_pins[DEMUX_IN] = {{B, 1}, {B, 3}, {B, 2}, {B, 6}};
 //A, B, C, D (pins 15, 14, 16, 10)
 
 const struct pin demux_pins[DEMUX_IN] = {{F, 4}, {F, 5}, {F, 6}, {F, 7}};
 //A, B, C, D (pins A0, A1, A2, A3)
 
-inline void init_SN74159N(void)
+void init_SN74159N(void)
 {
 	for(uint8_t x = 0; x < DEMUX_IN - 1; x++)
 	{
@@ -64,15 +64,16 @@ inline void init_SN74159N(void)
 	return;
 }
 
-inline void scan_SN74159N(uint8_t row)
+void scan_SN74159N(uint8_t row)
 {
 	uint8_t ABCD[4];
-	//row = u4_reverse(row);
 	ABCD[0] = (0b1000 & row)>>3;
 	ABCD[1] = (0b0100 & row)>>2;
 	ABCD[2] = (0b0010 & row)>>1;
 	ABCD[3] = 0b0001 & row;
 	for(uint8_t x = 0; x < DEMUX_IN; x++)
 	{set_PINX_variable_output(demux_pins[x].position, demux_pins[x].port, ABCD[x]);}
+	_delay_us(35);//>switching characteristics: from A, B, C (input) to any Y (output) - Vcc 4.5V, (TYP)18ns (MAX)36ns
+	//				[programmer note]: this matches the switching characteristics of most demux chips
 	return;
 }

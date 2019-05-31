@@ -1,9 +1,11 @@
 #include "base.h"
 #include "../promicro/pinlogic.h"
-#include "../promicro/promicro.h"
 #include "../usb_keyboard/usb_keyboard.h"
-
 #include "../LAYOUT_SELECT.h"
+
+#ifdef IBMPingmaster
+#include "../promicro/IBMPingmaster.h"
+#endif
 
 volatile uint8_t DRIVER_ROWS = 1; //driver rows is used by whichever chip we are driving the board with
 #include "../drivers/driver.h"

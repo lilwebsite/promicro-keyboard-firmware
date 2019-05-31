@@ -13,8 +13,8 @@ _usage ()
 {
 	echo "usage ${0} [options]"
 	echo
-	echo "running this script without any options will compile the .hex"
-	echo "file if it doesn't exist, or if it does eixst, it will print out the binary size"
+	echo "running this script without any options will compile the .hex file if"
+	echo "it doesn't exist, or if it does eixst, it will print out the binary size"
 	echo
 	echo "-C		Compile the firmware"
 	echo "			 Default: ${COMPILE}"

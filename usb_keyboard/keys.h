@@ -79,7 +79,7 @@
 #define KEY_F12			69
 #define KEY_PRINTSCREEN	70
 #define KEY_SCROLL_LOCK	71
-//#define KEY_PAUSE		72
+#define KEY_PAUSE		72
 #define KEY_INSERT		73
 #define KEY_HOME		74
 #define KEY_PAGE_UP		75
