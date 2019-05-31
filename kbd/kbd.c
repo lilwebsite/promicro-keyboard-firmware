@@ -255,13 +255,6 @@ int main(void)
 			
 			setup_keys();//figure out what is being pressed in the row
 			
-			#ifdef ENABLE_LAYER_KEYS
-			layer_select();//if any of the layer keys were pressed this changes the variable layer
-			#endif
-			#ifdef ENABLE_LAYER_TOGGLE
-			layer_cycle();//if any of the layer cycle keys were pressed this will iterate through the specified layers
-			#endif
-			
 			#ifdef __USER
 			functions();//figure out if theres something we have to run first
 			if(standby)
@@ -270,6 +263,13 @@ int main(void)
 				kbsend();
 				continue;
 			}
+			#endif
+
+			#ifdef ENABLE_LAYER_KEYS
+			layer_select();//if any of the layer keys were pressed this changes the variable layer
+			#endif
+			#ifdef ENABLE_LAYER_TOGGLE
+			layer_cycle();//if any of the layer cycle keys were pressed this will iterate through the specified layers
 			#endif
 			
 			press_release();
