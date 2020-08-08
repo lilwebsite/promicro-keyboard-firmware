@@ -9,7 +9,7 @@ EFUSE=0xC3
 
 #programmer applications
 AVR=avrdude
-AVRF=-F -V -D
+AVRF=-D
 DFU=dfu-programmer $(MCU)
 
 #info files
