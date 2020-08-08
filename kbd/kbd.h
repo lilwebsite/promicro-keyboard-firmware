@@ -93,7 +93,7 @@ uint8_t prevnext_key(struct keystate key)
 static volatile struct keystate currently_pressing[COLUMNS];//array of all currently pressed keys and their keystate info for the current column
 static volatile uint8_t previous_presses[ROWS][COLUMNS];//an array to remember what was last pressed, 1 is equal to changed state, 0 is no change
 
-inline void update_layers(struct kblayer_key *lk)
+void update_layers(struct kblayer_key *lk)
 {
 	//update the layer keys
 	last_layer->key.pressed = 0;
@@ -101,7 +101,7 @@ inline void update_layers(struct kblayer_key *lk)
 	layer = lk;//end with setting the current layer to what was pressed
 	return;
 }
-inline void get_last_layer(void)
+void get_last_layer(void)
 {
 	#ifdef ENABLE_LAYER_KEYS
 	for(uint8_t x = 0; x < LAYERS; x++)
