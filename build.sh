@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 FLASH_ERR='no'
 MAKE_ERR='no'
@@ -11,7 +11,7 @@ DEBUG='no'
 
 _usage ()
 {
-	echo "usage ${0} [options]"
+	echo "usage ${0} [[options]]"
 	echo
 	echo "running this script without any options will compile the .hex file if"
 	echo "it doesn't exist, or if it does eixst, it will print out the binary size"
@@ -48,25 +48,25 @@ while getopts 'CNDFBGh' arg; do
 	esac
 done
 
-if [ $FLASH_BOOTLOADER = 'yes' ]
+if [[ $FLASH_BOOTLOADER = 'yes' ]]
 then
 	make flash-bootloader FLASH_DFU='no'
 	exit $?
 fi
 
-if [ $NOCLEAN = 'no' -a $COMPILE = 'yes' -o ! -f 'kbd.hex' ]
+if [[ $NOCLEAN = 'no' && $COMPILE = 'yes' || ! -f 'kbd.hex' ]]
 then
 	make fullclean
 fi
 
 export DEBUG
-if [ ! -f 'kbd.hex' ]; then make; fi
-if [ ! $? -eq 0 ]; then MAKE_ERR='yes'; fi
+if [[ ! -f 'kbd.hex' ]]; then make; fi
+if [[ ! $? == 0 ]]; then MAKE_ERR='yes'; fi
 
-if [ $MAKE_ERR = 'no' -a $FLASH_DEVICE = 'yes' ]
+if [[ $MAKE_ERR = 'no' && $FLASH_DEVICE = 'yes' ]]
 then
 	export FLASH_DFU
-	if [ $FLASH_DFU = 'yes' ]
+	if [[ $FLASH_DFU == 'yes' ]]
 	then
 		HICCUP='no'
 		FLASH_ERR='yes'
@@ -78,17 +78,17 @@ then
 		do
 			sleep 0.5s
 			make -e erasechip
-			if [ ! $? -eq 0 ]; then HICCUP='yes'; continue; fi
+			if [[ ! $? == 0 ]]; then HICCUP='yes'; continue; fi
 			make -e flash
-			if [ ! $? -eq 0 ]; then HICCUP='yes'; continue; fi
+			if [[ ! $? == 0 ]]; then HICCUP='yes'; continue; fi
 			FLASH_ERR='no'
 			break
 		done
-		if [ $FLASH_ERR = 'no' ]; then make launch; fi
+		if [[ $FLASH_ERR = 'no' ]]; then make launch; fi
 	else
 		make -e erasechip
 		make -e flash
-		if [ ! $? -eq 0 -a $MAKE_ERR = 'no' ]; then FLASH_ERR='yes'; fi
+		if [[ ! $? == 0 && $MAKE_ERR = 'no' ]]; then FLASH_ERR='yes'; fi
 		make -e validate
 	fi
 fi
