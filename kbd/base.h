@@ -1,10 +1,31 @@
 #ifndef __BASE
+
+#ifdef IBMPingmaster
+//pingmaster defines
+#define KBD_IBMPingmaster
+#define DEMUX_OUT 16
+#define DEMUX_IN 4
+#define COLUMNS 8
+#define ROWS 16
+#define KEYS 102
+#endif
+
+#ifdef PC8801
+//pc8801 defines
+#define KBD_PC8801
+#define DEMUX_OUT 14
+#define DEMUX_IN 4
+#define COLUMNS 8
+#define ROWS 14
+#define KEYS 
+#endif
+
 //includes
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <util/setbaud.h>
 #include <util/delay.h>
-//user includes
+//project includes
 #include "types.h"
 //define no-operation
 #define _NOP() do { __asm__ __volatile__ ("nop"); } while (0)

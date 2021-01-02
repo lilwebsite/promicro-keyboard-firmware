@@ -1,16 +1,17 @@
-#include "IBMPingmaster.h"
+#ifdef KBD_PC8801
+#include "globals.h"
 
-uint8_t init_inputs(void)
+static const struct pin input_pins[COLUMNS] =
 {
-	uint8_t pullup = 1;
-	for(uint8_t x = 0; x < COLUMNS; x++)
-	{
-		set_PINX_output(input_pins[x].position, input_pins[x].port);
-		set_PINX_input(input_pins[x].position, input_pins[x].port, pullup);
-	}
-
-	return 1;
-}
+	{D, 1},//2
+	{D, 0},//3
+	{D, 4},//4
+	{C, 6},//5
+	{D, 7},//6
+	{E, 6},//7
+	{B, 4},//8
+	{B, 5} //9
+};
 
 uint8_t init_pins(void)
 {
@@ -21,7 +22,7 @@ uint8_t init_pins(void)
 	set_PINX_output(6, F);//pin A2
 	set_PINX_output(7, F);//pin A3
 
-	init_inputs();
+	init_inputs(input_pins);
 	
 	//USB
 	set_PINX_input(3, D, 0);
@@ -43,12 +44,4 @@ uint8_t init_pins(void)
 	
 	return 1;
 }
-
-uint8_t init_promicro(void)
-{
-	CPU_PRESCALE(CPU_16MHz);
-	
-	init_pins();
-	
-	return 1;
-}
+#endif

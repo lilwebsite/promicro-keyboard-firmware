@@ -1,40 +1,5 @@
 #include "../../kbd/base.h"
 
-//renamed for convenience
-#define LCTRL KEY_LEFT_CTRL
-#define RCTRL KEY_RIGHT_CTRL
-
-#define LSHIFT KEY_LEFT_SHIFT
-#define RSHIFT KEY_RIGHT_SHIFT
-
-#define LEFT_ALT KEY_LEFT_ALT
-#define RIGHT_ALT KEY_RIGHT_ALT
-
-#define LEFT_GUI KEY_LEFT_GUI
-#define RIGHT_GUI KEY_RIGHT_GUI
-
-#define PAGE_UP KEY_PAGE_UP
-#define PAGE_DOWN KEY_PAGE_DOWN
-
-#define LBRACE KEY_LEFT_BRACE
-#define RBRACE KEY_RIGHT_BRACE
-
-#define ENTER KEY_ENTER
-#define KEY_SEMI KEY_SEMICOLON
-#define PERIOD KEY_PERIOD
-#define KP_PERIOD KEYPAD_PERIOD
-#define COMMA KEY_COMMA
-#define BACKSPACE KEY_BACKSPACE
-#define DEL KEY_DELETE
-#define BACKSLASH KEY_BACKSLASH
-#define NUMLOCK KEY_NUM_LOCK
-#define CAPS KEY_CAPS_LOCK
-
-//new defines
-#define VOL_UP 0x05
-#define VOL_DOWN 0x06
-#define PRTSCN 0x46
-
 #define LAYERS 2//edit this if more layers are added
 const struct kblayer PROGMEM kblayer_list[LAYERS] = {
 	{

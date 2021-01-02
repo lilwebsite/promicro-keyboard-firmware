@@ -25,15 +25,8 @@ struct kblayer
 struct kblayer_key
 {
 	uint8_t layer;//target layer
-	struct keystate key;//row, column, is layer active
-};
-
-struct kblayer_cycle
-{
-	struct kblayer_key lk;
-	const uint8_t count;
-	uint8_t current;
-	uint8_t layers[];
+	uint8_t toggle;//toggle (1) or hold key (0) to get layer
+	struct keystate key;//row and column data, pressed value ignored
 };
 
 struct pin

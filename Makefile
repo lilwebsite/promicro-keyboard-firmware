@@ -20,20 +20,17 @@ DUMP=dump.hex
 #
 #as far as im aware, 126(+2 for modifier keys) is max key rollover with single buffer endpoint
 #KEY_ROLLOVER takes up N*3 bytes of RAM (104 * 3 = 312 bytes, for example) and cannot be higher than the ENDPOINT_SIZE
+#if MAKE_VARS not set the compiler will use defaults predefined in the code
+MAKE_VARS=1
 KEY_ROLLOVER=64
-DEMUX_OUT=16
-DEMUX_IN=4
-COLUMNS=8
-ROWS=16
-KEYS=102
-DRIVER=SN74159N
+#KEYBOARD=PC8801
 KEYBOARD=IBMPingmaster
 #don't change ENDPOINT_SIZE, PACKET_SIZE or REPORT_COUNT unless you know what you're doing!
 ENDPOINT_SIZE=64
 PACKET_SIZE=64
 REPORT_COUNT=62
 
-DEFINES=-DF_CPU=$(FREQ) -DBAUD=$(BAUD) -DKEY_ROLLOVER=$(KEY_ROLLOVER) -DENDPOINT_SIZE=$(ENDPOINT_SIZE) -DPACKET_SIZE=$(PACKET_SIZE) -DREPORT_COUNT=$(REPORT_COUNT) -DDEMUX_OUT=$(DEMUX_OUT) -DDEMUX_IN=$(DEMUX_IN) -DCOLUMNS=$(COLUMNS) -DROWS=$(ROWS) -DKEYS=$(KEYS) -D$(DRIVER) -D$(KEYBOARD)
+DEFINES=-DMAKEVARS -DF_CPU=$(FREQ) -DBAUD=$(BAUD) -DKEY_ROLLOVER=$(KEY_ROLLOVER) -DENDPOINT_SIZE=$(ENDPOINT_SIZE) -DPACKET_SIZE=$(PACKET_SIZE) -DREPORT_COUNT=$(REPORT_COUNT) -D$(KEYBOARD)
 
 #compiler definitions
 BIN=kbd
@@ -49,7 +46,7 @@ endif
 #source files
 SRC := $(wildcard kbd/*.c)
 SRC += $(wildcard usb_keyboard/*.c)
-SRC += promicro/$(KEYBOARD).c
+SRC += $(wildcard promicro/pinconfig/*.c)
 SRC += promicro/pinlogic.c
 
 OBJS := $(SRC:%.c=%.o)

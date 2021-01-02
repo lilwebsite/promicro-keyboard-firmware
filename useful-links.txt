@@ -13,6 +13,9 @@ write your own keyboard firmware:
 
 	tool for creating USB HID descriptors (useful for creating extra descriptors to handle keys such as vol up/down)
 	-> https://www.usb.org/document-library/hid-descriptor-tool
+
+	scancode specification from microsoft (2012 archived link)
+	-> https://web.archive.org/web/20120716185241/http://download.microsoft.com/download/1/6/1/161ba512-40e2-4cc9-843a-923143f3456c/scancode.doc
 	
 	pro micro pin layout
 	-> https://cdn.sparkfun.com/datasheets/Dev/Arduino/Boards/ProMicro16MHzv1.pdf

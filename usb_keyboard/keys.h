@@ -108,6 +108,11 @@
 #define KEYPAD_0		98
 #define KEYPAD_PERIOD	99
 
+//SPECIAL - may or may not work
+#define KEYPAD_COMMA	133
+#define KEY_APP			101
+#define LOCKING_CAPS	130
+
 //Media key codes are not real scan codes, they must be translated to a 16
 //bit number using a lookup table which is defined below
 //
@@ -121,8 +126,56 @@
 #define VOL_UP			0x05
 #define VOL_DOWN		0x06
 
-//idicates a layer toggle button
-#define L_TOGGLE1	0xF0
-#define L_TOGGLE2	0xF1
-#define L_TOGGLE3	0xF2
-#define L_TOGGLE4	0xF3
+//renamed for convenience
+#define LCTRL KEY_LEFT_CTRL
+#define RCTRL KEY_RIGHT_CTRL
+
+#define LSHIFT KEY_LEFT_SHIFT
+#define RSHIFT KEY_RIGHT_SHIFT
+
+#define LEFT_ALT KEY_LEFT_ALT
+#define RIGHT_ALT KEY_RIGHT_ALT
+
+#define LEFT_GUI KEY_LEFT_GUI
+#define RIGHT_GUI KEY_RIGHT_GUI
+
+#define PAGE_UP KEY_PAGE_UP
+#define PAGE_DOWN KEY_PAGE_DOWN
+
+#define LBRACE KEY_LEFT_BRACE
+#define RBRACE KEY_RIGHT_BRACE
+
+#define ENTER KEY_ENTER
+#define KEY_SEMI KEY_SEMICOLON
+#define PERIOD KEY_PERIOD
+#define KP_PERIOD KEYPAD_PERIOD
+#define COMMA KEY_COMMA
+#define BACKSPACE KEY_BACKSPACE
+#define DEL KEY_DELETE
+#define BACKSLASH KEY_BACKSLASH
+#define NUMLOCK KEY_NUM_LOCK
+#define CAPS KEY_CAPS_LOCK
+#define PRTSCN KEY_PRINTSCREEN
+
+#define KEYPAD_AST KEYPAD_ASTERISK
+#define KEYPAD_MIN KEYPAD_MINUS
+#define KEYPAD_PLS KEYPAD_PLUS
+#define KEYPAD_ENT KEYPAD_ENTER
+#define KEYPAD_PRD KEYPAD_PERIOD
+#define KEYPAD_SLH KEYPAD_SLASH
+
+// special
+#define KEYPAD_COM KEYPAD_COMMA
+#define LOCKING_C LOCKING_CAPS
+#define KEY_F13		104
+#define KEY_F14		105
+#define KEY_F15		106
+#define KEY_F16		107
+#define KEY_F17		108
+#define KEY_F18		109
+#define KEY_F19		110
+#define KEY_F20		111
+#define KEY_F21		112
+#define KEY_F22		113
+#define KEY_F23		114
+#define KEY_F24		115

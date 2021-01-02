@@ -4,6 +4,7 @@ uint8_t get_layer_key(uint8_t layer_num, uint8_t row, uint8_t column)
 {
 	for(uint8_t x = 0; x < LAYERS; x++)
 	{
+		//if row and column are both max (255) then we are checking if layer exists
 		if(row == 0xFF && column == 0xFF)
 		{
 			for(uint8_t x = 0; x < LAYERS; x++)
@@ -21,55 +22,60 @@ uint8_t get_layer_key(uint8_t layer_num, uint8_t row, uint8_t column)
 	return 0;
 }
 
-void layer_cycle(void)
-{
-	get_last_layer();
-	for(uint8_t x = 0; x < COLUMNS; x++)
-	{
-		struct keystate keypress = currently_pressing[x];//get the current key
-		if(keypress.pressed)//is the current key being pressed
-		{
-			if(cycle.lk.key.row == keypress.row
-			&& cycle.lk.key.column == keypress.column)//if the key being pressed is a layer key
-			{
-				if(cycle.current >= cycle.count-1)
-				{cycle.current = 0;}
-				else
-				{cycle.current++;}
-				cycle.lk.layer = cycle.layers[cycle.current];
-				update_layers(&cycle.lk);
-				//cycle delay
-				_delay_ms(200);
-				break;
-			}
-		}
-	}
-	return;
-}
-
 void layer_select(void)
 {
-	get_last_layer();//points to a layer in layer_keys array
-	for(uint8_t x = 0; x < COLUMNS; x++)
+	for(uint8_t x = 1; x < LAYERS; x++)
 	{
-		struct keystate keypress = currently_pressing[x];//get the current key
-		if(keypress.pressed)//is the current key being pressed
+		const struct kblayer_key *target_layer = &layer_keys[x];
+		uint8_t is_pressed = 0;
+
+		// if row doesn't match the key, then don't proceed
+		if(row != target_layer->key.row)
+		{continue;}
+		// prevent the user from descending more than one layer simultaneously
+		if(target_layer->layer != layer->layer
+		&& layer->layer != base_layer.layer)
+		{continue;}
+
+		for(uint8_t y = 0; y < COLUMNS; y++)
 		{
-			for(uint8_t z = 0; z < LAYERS; z++)
-			{
-				if(layer_keys[z].key.row == keypress.row
-				&& layer_keys[z].key.column == keypress.column)//if the key being pressed is a layer key
-				{
-					if(layer_keys[z].layer == last_layer->layer)
-					{continue;}//if the layer key being pressed is the same as the last layer ignore it
-					update_layers(&layer_keys[z]);
-					break;
-				}
-			}
+			struct keystate keypress = currently_pressing[y];
+			if(target_layer->key.row == keypress.row
+			&& target_layer->key.column == keypress.column
+			&& keypress.pressed)
+			{is_pressed = 1; break;}
 		}
-		if(last_layer->layer != layer->layer)//if the new layer was selected complete the function
-		{break;}
+
+		if(is_pressed)
+		{
+			//if(target_layer->toggle)
+			//{
+			//	// toggle between base_layer to target_layer
+			//	if(target_layer->layer != base_layer.layer)
+			//	{layer = target_layer;}
+			//	else
+			//	{layer = &base_layer;}
+			//	_delay_us(75); // debounce protection
+			//	continue;
+			//}
+			// we have passed the toggle logic, so now we check
+			// for if the layer is actively being pressed.
+			// if the the target layer is already active, we don't
+			// need to set it twice.
+			if(layer->layer == base_layer.layer)
+			{layer = target_layer;}
+		}
+		else
+		{
+			// toggle logic does not apply here.
+			// we only check if we need to reset 
+			// to the base layer
+			if(layer->layer != base_layer.layer)
+			//&& !target_layer->toggle)
+			{layer = &base_layer;}
+		}
 	}
+
 	return;
 }
 
@@ -138,7 +144,7 @@ void reset_keys(void)
 	}
 	
 	//everything under here is used in user functions
-	#ifdef __USER
+	#if defined __USER && defined KBD_IBMPingmaster
 	shiftcaps = default_state;//used in functions()
 	#endif
 	
@@ -156,7 +162,8 @@ void functions(void)
 			////////////////////////////////////////////////////
 			//add custom logic for user defined functions here//
 			////////////////////////////////////////////////////
-			//standby will 'turn off' keyboard using the RESET key
+			#ifdef __STDBY
+			//standby will 'turn off' keyboard using the RESET key (pingmaster)
 			if(keypress.row == standby_sw.row 
 			&& keypress.column == standby_sw.column
 			&& !layer->layer)//if not on layer 0, this will not execute
@@ -164,14 +171,16 @@ void functions(void)
 			
 			if(standby)
 			{continue;}
-			//
+			#endif
 			
-			//double zero key
+			#ifdef KBD_IBMPingmaster
+			//double zero key (pingmaster)
 			if(keypress.row == keypad_00.row
 			&& keypress.column == keypad_00.column)
 			{send_00(); continue;}
-			//
+			#endif
 			
+			#ifdef KBD_IBMPingmaster
 			//CAPSLOCK on both SHIFTL and SHIFTR press
 			if(shift_key(keypress))
 			{
@@ -183,23 +192,32 @@ void functions(void)
 				|| shiftcaps.column != keypress.column)
 				{capslock(); continue;}
 			}
-			//
+			#endif
 			
+			#if defined KBD_IBMPingmaster || defined KBD_PC8801
 			//volume up/down buttons
 			if(volume_key(keypress))
 			{volume(volume_key(keypress)); continue;}
-			//
+			#endif
 			
+			#ifdef KBD_IBMPingmaster
 			//prev/next track buttons
 			if(prevnext_key(keypress))
 			{next_prev_track(prevnext_key(keypress)); continue;}
-			//
+			#endif
 			
+			#ifdef KBD_IBMPingmaster
 			//play/pause button
 			if(keypress.row == play_pause.row
 			&& keypress.column == play_pause.column)
 			{play_pause_media(); continue;}
-			//
+			#endif
+
+			#ifdef KBD_PC8801
+			if(keypress.row == mute_key.row
+			&& keypress.column == mute_key.column)
+			{mute(); continue;}
+			#endif
 		}
 	}
 }
@@ -214,13 +232,11 @@ int main(void)
 	init_driver();
 	
 	_delay_ms(250);//startup delay
-	#if defined ENABLE_LAYER_TOGGLE && ! defined ENABLE_LAYER_KEYS
-	layer = &cycle.lk;
-	#else
-	layer_keys[0].key.pressed = 1;
-	layer = &layer_keys[0];//selects the primary layer as default
+	#ifdef ENABLE_LAYERS
+	layer = &base_layer;//selects the primary layer as default
+	//last_layer = &base_layer;
 	#endif
-	usb_keyboard_press(NUMLOCK, 0);//default to numlock on
+	//usb_keyboard_press(NUMLOCK, 0);//default to numlock on
 	while(1)//main program
 	{
 		uint8_t x;
@@ -253,10 +269,17 @@ int main(void)
 			if(!kbd.state && kbd.row_state)
 			{kbd.state = 1;}
 			
-			setup_keys();//figure out what is being pressed in the row
+			//figure out what is being pressed in the row
+			setup_keys();
+
+			#ifdef ENABLE_LAYERS
+			//if any of the layer keys were pressed this applies them to the variable `layer`
+			layer_select();
+			#endif
 			
 			#ifdef __USER
 			functions();//figure out if theres something we have to run first
+			#ifdef __STDBY
 			if(standby)
 			{
 				reset_sending();
@@ -264,12 +287,6 @@ int main(void)
 				continue;
 			}
 			#endif
-
-			#ifdef ENABLE_LAYER_KEYS
-			layer_select();//if any of the layer keys were pressed this changes the variable layer
-			#endif
-			#ifdef ENABLE_LAYER_TOGGLE
-			layer_cycle();//if any of the layer cycle keys were pressed this will iterate through the specified layers
 			#endif
 			
 			press_release();
@@ -277,7 +294,8 @@ int main(void)
 			_delay_us(35);//>switching characteristics: from A, B, C (input) to any Y (output) - Vcc 4.5V, (TYP)18ns (MAX)36ns
 			//				[programmer note]: this matches the switching characteristics of most demux chips
 			
-			init_inputs();//re-initialize the inputs
+			//re-initialize the inputs
+			init_inputs(input_pins);
 		}
 	}
 	return 1;
