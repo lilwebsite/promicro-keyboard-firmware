@@ -20,6 +20,12 @@
 #define KEYS 
 #endif
 
+#ifdef ITT
+#define KBD_ITT
+#define COLUMNS 100
+#define KEYS 96
+#endif
+
 //includes
 #include <avr/io.h>
 #include <avr/pgmspace.h>

@@ -17,6 +17,12 @@
 #include "../promicro/pinconfig/PC8801.c"
 #endif
 
+#ifdef KBD_ITT
+//#include "../layouts/ITT/Erderm-layout.h"
+#include "../layouts/ITT/lilwebsite-layout.h"
+#include "../promicro/pinconfig/ITT.c"
+#endif
+
 volatile uint8_t DRIVER_ROWS = 1; //driver rows is used by whichever chip we are driving the board with
 #include "../drivers/driver.h"
 
@@ -32,6 +38,9 @@ uint8_t row;//the current row
 const struct kblayer_key *layer;//points to the current layer
 const static struct kblayer_key base_layer = {0, 0, {0xFF, 0xFF, 0}};//the base layer for reference
 static volatile uint8_t readthepin = 0;
+
+static volatile uint8_t received[100];
+
 
 //predefined keys
 #ifdef KBD_IBMPingmaster
@@ -78,17 +87,17 @@ uint8_t shift_key(struct keystate key)
 }
 #endif
 
-//determines if a key is vol up/down and sends their value (1 = up / 2 = down)
-uint8_t volume_key(struct keystate key)
-{
-	if(key.row == volume_up.row
-	&& key.column == volume_up.column)
-	{return 1;}
-	if(key.row == volume_down.row
-	&& key.column == volume_down.column)
-	{return 2;}
-	return 0;
-}
+////determines if a key is vol up/down and sends their value (1 = up / 2 = down)
+//uint8_t volume_key(struct keystate key)
+//{
+//	if(key.row == volume_up.row
+//	&& key.column == volume_up.column)
+//	{return 1;}
+//	if(key.row == volume_down.row
+//	&& key.column == volume_down.column)
+//	{return 2;}
+//	return 0;
+//}
 
 #ifdef KBD_IBMPingmaster
 //determines if a key is a prev/next track key and sends their value (1 = prev / 2 = next)
@@ -105,7 +114,7 @@ uint8_t prevnext_key(struct keystate key)
 #endif
 
 static volatile struct keystate currently_pressing[COLUMNS];//array of all currently pressed keys and their keystate info for the current column
-static volatile uint8_t previous_presses[ROWS][COLUMNS];//an array to remember what was last pressed, 1 is equal to changed state, 0 is no change
+//static volatile uint8_t previous_presses[ROWS][COLUMNS];//an array to remember what was last pressed, 1 is equal to changed state, 0 is no change
 
 uint8_t get_layer_key(uint8_t layer_num, uint8_t row, uint8_t column);
 void layer_select(void);
@@ -135,6 +144,18 @@ static inline void standby_switch(void)
 	return;
 }
 #endif
+
+#define SOLENOID_DISABLE 67
+static uint8_t solenoid = 1; // enables solenoid
+//static uint8_t solenoid = 0; // disables solenoid
+static inline void solenoid_toggle(void)
+{
+	solenoid ^= 0b1;
+	solenoid |= 0b100;
+	solenoid &= 0b101;
+	return;
+}
+
 static inline void send_00(void)
 {
 	usb_keyboard_press(KEY_0, 0);

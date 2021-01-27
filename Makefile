@@ -23,8 +23,9 @@ DUMP=dump.hex
 #if MAKE_VARS not set the compiler will use defaults predefined in the code
 MAKE_VARS=1
 KEY_ROLLOVER=64
+KEYBOARD=ITT
 #KEYBOARD=PC8801
-KEYBOARD=IBMPingmaster
+#KEYBOARD=IBMPingmaster
 #don't change ENDPOINT_SIZE, PACKET_SIZE or REPORT_COUNT unless you know what you're doing!
 ENDPOINT_SIZE=64
 PACKET_SIZE=64
@@ -38,7 +39,8 @@ CC=avr-gcc
 OBJCOPY=avr-objcopy
 LDFLAGS=-Wl,-Map=$(strip $@).map -Wl,--start-group -Wl,-lm -Wl,--end-group -Wl,--gc-sections,--print-gc-sections
 ifneq ($(DEBUG), yes)
-CFLAGS=$(DEFINES) -mmcu=$(MCU) -Os -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -mrelax
+#CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections -ffunction-sections -mrelax
+CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections
 else
 CFLAGS=$(DEFINES) -mmcu=$(MCU) -Og -g -ggdb -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -ffunction-sections -fdata-sections
 endif
