@@ -159,7 +159,7 @@ int main(void)
 		//for(uint8_t x = 0; x < 100; x++)
 		{
 			set_PINX_variable_output(6, E, received[counter]);
-			struct keypress target = {keymap[counter], 1, counter};
+			struct keypress target = {keymap[counter], counter, counter};
 			kbd_press_release(received[counter], target);
 		}
 		counter = 0;

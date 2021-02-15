@@ -18,8 +18,8 @@
 #endif
 
 #ifdef KBD_ITT
-//#include "../layouts/ITT/Erderm-layout.h"
-#include "../layouts/ITT/lilwebsite-layout.h"
+#include "../layouts/ITT/Erderm-layout.h"
+//#include "../layouts/ITT/lilwebsite-layout.h"
 #include "../promicro/pinconfig/ITT.c"
 #endif
 

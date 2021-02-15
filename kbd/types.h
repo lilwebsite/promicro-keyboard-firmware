@@ -15,12 +15,12 @@ struct keystate
 	uint8_t pressed;
 };
 
-struct kblayer
-{
-	//whenever this type is accessed the program will know what characters belong to which layer
-	const uint8_t layer;
-	const uint8_t matrix[ROWS][COLUMNS];
-};
+//struct kblayer
+//{
+//	//whenever this type is accessed the program will know what characters belong to which layer
+//	const uint8_t layer;
+//	const uint8_t matrix[ROWS][COLUMNS];
+//};
 
 struct kblayer_key
 {

@@ -17,10 +17,10 @@ uint8_t init_pins(void)
 {
 	//pins are based on a pro micro in order
 	//output pins for the decoder
-	set_PINX_output(4, F);//pin A0
-	set_PINX_output(5, F);//pin A1
-	set_PINX_output(6, F);//pin A2
-	set_PINX_output(7, F);//pin A3
+	set_PINX_output(7, F);//pin A0
+	set_PINX_output(6, F);//pin A1
+	set_PINX_output(5, F);//pin A2
+	set_PINX_output(4, F);//pin A3
 
 	init_inputs(input_pins);
 	

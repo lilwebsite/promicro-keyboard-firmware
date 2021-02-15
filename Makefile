@@ -42,7 +42,7 @@ ifneq ($(DEBUG), yes)
 #CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections -ffunction-sections -mrelax
 CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections
 else
-CFLAGS=$(DEFINES) -mmcu=$(MCU) -Og -g -ggdb -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -ffunction-sections -fdata-sections
+CFLAGS=$(DEFINES) -mmcu=$(MCU) -Og -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields
 endif
 
 #source files
