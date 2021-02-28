@@ -1,62 +1,53 @@
+//SN74159N is a 4 to 16 line demultiplexer
 
-void scan_signal(void)
-{
-	uint8_t x;
-	reset_keys();//key queues need to be completely reset before loop starts from beginning
-	if(kbd.last != kbd.state){kbd.last = kbd.state; kbd.changed = 1;}
-	if(kbd.changed){kbsend();}//if the keyboard state has changed send the keys
-	kbd.state = 0;
+///////////////
+//USEFUL INFO//
+///////////////
+//		pro micro pin layout -> https://cdn.sparkfun.com/datasheets/Dev/Arduino/Boards/ProMicro16MHzv1.pdf
+//
+//		demultiplexer datasheet -> https://html.alldatasheet.com/html-pdf/27373/TI/SN74159N/22/1/SN74159N.html
+//		OR
+//		search for SN74159N
 
-	for(row = 0; row <= DRIVER_ROWS; row++)//the amount of driver rows is decided by the selected driver in drivers/driver.h
-	{
-		kbd.row_state = 0;
-		readthepin = 0;//reads a pin bit
-		
-		set_row(row);
-		
-		for(x = 0; x < COLUMNS; x++)
-		{
-			readthepin = read_PINX_bit(input_pins[x].position, input_pins[x].port);
-			
-			if(readthepin)
-			{ispressed[x] = HIGH; continue;}
-			else
-			{ispressed[x] = LOW;}//LOW == low state on pin(aka key press), HIGH == high state, or pullup(no press)
-		
-			//previous_presses is assigned the inverse of LOW(0) or HIGH(1), so if they are equal then it has changed state
-			if(previous_presses[row][x] == ispressed[x])
-			{kbd.row_state = 1;}
-		}
-		
-		if(!kbd.state && kbd.row_state)
-		{kbd.state = 1;}
-		
-		//figure out what is being pressed in the row
-		setup_keys();
+//scanvalues used to check each row 0 - 15 (for a 4 to 16 line demultiplexer)
+//DCBA
+//0000 - x . . . . . . . . . . . . . . .
+//0001 - . x . . . . . . . . . . . . . .
+//0010 - . . x . . . . . . . . . . . . .
+//0011 - . . . x . . . . . . . . . . . .
+//0100 - . . . . x . . . . . . . . . . .
+//0101 - . . . . . x . . . . . . . . . .
+//0110 - . . . . . . x . . . . . . . . .
+//0111 - . . . . . . . x . . . . . . . .
+//1000 - . . . . . . . . x . . . . . . .
+//1001 - . . . . . . . . . x . . . . . .
+//1010 - . . . . . . . . . . x . . . . .
+//1011 - . . . . . . . . . . . x . . . .
+//1100 - . . . . . . . . . . . . x . . .
+//1101 - . . . . . . . . . . . . . x . .
+//1110 - . . . . . . . . . . . . . . x .
+//1111 - . . . . . . . . . . . . . . . x
 
-		#ifdef ENABLE_LAYERS
-		//if any of the layer keys were pressed this applies them to the variable `layer`
-		layer_select();
-		#endif
-		
-		#ifdef __USER
-		functions();//figure out if theres something we have to run first
-		#ifdef ENABLE_STDBY
-		if(standby)
-		{
-			reset_sending();
-			kbsend();
-			continue;
-		}
-		#endif
-		#endif
-		
-		press_release();
-		
-		_delay_us(35);//>switching characteristics: from A, B, C (input) to any Y (output) - Vcc 4.5V, (TYP)18ns (MAX)36ns
-		//				[programmer note]: this matches the switching characteristics of most demux chips
-		
-		//re-initialize the inputs
-		init_inputs(input_pins);
-	}
+#define SCANVALUES \
+{\
+	{0, 0, 0, 0}\
+	{0, 0, 0, 1}\
+	{0, 0, 1, 0}\
+	{0, 0, 1, 1}\
+	{0, 1, 0, 0}\
+	{0, 1, 0, 1}\
+	{0, 1, 1, 0}\
+	{0, 1, 1, 1}\
+	{1, 0, 0, 0}\
+	{1, 0, 0, 1}\
+	{1, 0, 1, 0}\
+	{1, 0, 1, 1}\
+	{1, 1, 0, 0}\
+	{1, 1, 0, 1}\
+	{1, 1, 1, 0}\
+	{1, 1, 1, 1}\
 }
+
+static volatile uint8_t pin_state;
+
+volatile uint8_t DRIVER_ROWS;

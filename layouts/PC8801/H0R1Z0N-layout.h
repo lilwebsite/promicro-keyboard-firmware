@@ -1,4 +1,12 @@
-#include "../../kbd/base.h"
+const static struct keystate volume_up = {9, 3, 0};
+const static struct keystate volume_down = {9, 2, 0};
+const static struct keystate mute_key = {9, 1, 0};
+
+struct kblayer_key layer_keys[LAYERS] = {
+	base_layer,
+	{1, 0, {8, 5, 0}},//secondary layer
+	{2, 0, {9, 4, 0}}//tertiary layer
+};
 
 #define LAYERS 3//edit this if more layers are added
 const struct kblayer PROGMEM kblayer_list[LAYERS] = {

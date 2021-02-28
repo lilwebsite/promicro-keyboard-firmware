@@ -1,5 +1,14 @@
-#ifdef KBD_ITT
-#include "globals.h"
+#define KBD_ITT
+#define COLUMNS 100
+#define KEYS 96
+
+//input pin A4
+set_PINX_input(4, F, 0);
+//enable pin A3
+set_PINX_variable_output(5, F, 1);
+//trigger pin A2
+set_PINX_variable_output(6, F, 0);
+
 
 static const struct pin input_pins[COLUMNS] =
 {
@@ -54,4 +63,3 @@ uint8_t init_pins(void)
 
 	return 1;
 }
-#endif

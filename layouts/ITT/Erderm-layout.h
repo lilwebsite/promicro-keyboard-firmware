@@ -1,5 +1,3 @@
-#include "../../kbd/base.h"
-
 // the switch to disable solenoid, references the position in the array below
 #define SOLENOID_DISABLE 67
 

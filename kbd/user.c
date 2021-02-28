@@ -1,4 +1,3 @@
-#include "user.h"
 
 ////////////////////////////////////
 //define user functions below here//
@@ -24,16 +23,6 @@ void volume(const uint8_t UPorDOWN)
 void play_pause_media(void)
 {
 	usb_extra_press(PLAY_PAUSE);
-	_delay_ms(70);
-	return;
-}
-
-void next_prev_track(const uint8_t PREVorNEXT)
-{
-	if(PREVorNEXT == 1)
-	{usb_extra_press(PREV_TRACK);}
-	if(PREVorNEXT == 2)
-	{usb_extra_press(NEXT_TRACK);}
 	_delay_ms(70);
 	return;
 }
@@ -85,7 +74,10 @@ void functions(void)
 
 			#ifdef ENABLE_SHIFT_CAPSLOCK
 			//CAPSLOCK on simultaneous SHIFTL and SHIFTR press
-			if(shift_key(keypress))
+			if((key.row == SHIFTL.row
+			&& key.column == SHIFTL.column)
+			|| (key.row == SHIFTR.row
+			&& key.column == SHIFTR.column))
 			{
 				if(shiftcaps.row == default_state.row
 				&& shiftcaps.column == default_state.column)
@@ -106,7 +98,18 @@ void functions(void)
 			#ifdef ENABLE_TRACK_KEYS
 			//prev/next track buttons
 			if(prevnext_key(keypress))
-			{next_prev_track(prevnext_key(keypress)); continue;}
+			//{next_prev_track(prevnext_key(keypress)); continue;}
+			{
+				//determines if a key is a prev/next track key and sends their value (1 = prev / 2 = next)
+				if(key.row == prev_track.row
+				&& key.column == prev_track.column)
+				{usb_extra_press(PREV_TRACK);}
+				if(key.row == next_track.row
+				&& key.column == next_track.column)
+				{usb_extra_press(NEXT_TRACK);}
+				_delay_ms(70);
+				continue;
+			}
 			#endif
 
 			#ifdef ENABLE_PLAY_PAUSE

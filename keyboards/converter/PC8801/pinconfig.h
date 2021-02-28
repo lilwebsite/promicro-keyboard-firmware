@@ -1,5 +1,8 @@
-#ifdef KBD_PC8801
-#include "globals.h"
+//static const struct pin demux_pins[DEMUX_IN] = {{B, 1}, {B, 3}, {B, 2}, {B, 6}};
+//A, B, C, D (pins 15, 14, 16, 10)
+
+const struct pin demux_pins[DEMUX_IN] = {{F, 4}, {F, 5}, {F, 6}, {F, 7}};
+//A, B, C, D (pins A0, A1, A2, A3)
 
 static const struct pin input_pins[COLUMNS] =
 {
@@ -44,4 +47,3 @@ uint8_t init_pins(void)
 	
 	return 1;
 }
-#endif

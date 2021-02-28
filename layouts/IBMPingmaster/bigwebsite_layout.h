@@ -1,4 +1,18 @@
-#include "../../kbd/base.h"
+#define ENABLE_STDBY
+const static struct keystate SHIFTR = {11, 5, 1};
+const static struct keystate SHIFTL = {3, 6, 1};
+const static struct keystate standby_sw = {4, 7, 0};
+const static struct keystate keypad_00 = {6, 7, 0};
+const static struct keystate volume_up = {12, 7, 0};
+const static struct keystate volume_down = {12, 0, 0};
+const static struct keystate prev_track = {11, 7, 0};
+const static struct keystate next_track = {10, 7, 0};
+const static struct keystate play_pause = {15, 6, 0};
+
+const static struct kblayer_key layer_keys[LAYERS] = {
+	base_layer,
+	{1, 0, {15, 7, 0}}
+};
 
 #define LAYERS 2//edit this if more layers are added
 const struct kblayer PROGMEM kblayer_list[LAYERS] = {
