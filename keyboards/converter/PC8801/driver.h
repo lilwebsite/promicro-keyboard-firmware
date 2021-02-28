@@ -53,7 +53,7 @@ void init_PC8801(void)
 	return;
 }
 
-void scan_PC8801(uint8_t row)
+void set_PC8801(uint8_t row)
 {
 	uint8_t ABCD[4];
 	ABCD[0] = (0b1000 & row)>>3;

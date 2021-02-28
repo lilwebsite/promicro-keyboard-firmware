@@ -47,8 +47,8 @@ endif
 
 #source files
 SRC := $(wildcard kbd/*.c)
-SRC += $(wildcard usb_keyboard/*.c)
-SRC += $(wildcard promicro/pinconfig/*.c)
+SRC += $(wildcard usb/*.c)
+#SRC += $(wildcard promicro/pinconfig/*.c)
 SRC += promicro/pinlogic.c
 
 OBJS := $(SRC:%.c=%.o)

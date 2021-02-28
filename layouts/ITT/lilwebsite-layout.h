@@ -1,5 +1,8 @@
 #include "../../kbd/base.h"
 
+// the switch to disable solenoid, references the position in the array below
+#define SOLENOID_DISABLE 99
+
 #define LAYERS 1//edit this if more layers are added
 const uint8_t keymap[COLUMNS] = {
 	KEY_F12,	KEY_F11,	KEY_F10,	KEY_F9,		KEY_F8,		KEY_F7,		KEY_F6,		KEY_F5,		KEY_F3,		KEY_F2,		KEY_ESC,		KEY_EQUAL,

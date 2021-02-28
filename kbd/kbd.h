@@ -1,6 +1,6 @@
 #include "base.h"
 #include "../promicro/pinlogic.h"
-#include "../usb_keyboard/usb_keyboard.h"
+#include "../usb/usb.h"
 
 #ifdef KBD_IBMPingmaster
 //the purpose of the keyboard matrix is to tell the layout where the keys are positioned in the rows / columns
@@ -44,7 +44,7 @@ static volatile uint8_t received[100];
 
 //predefined keys
 #ifdef KBD_IBMPingmaster
-#define __STDBY
+#define ENABLE_STDBY
 const static struct keystate SHIFTR = {11, 5, 1};
 const static struct keystate SHIFTL = {3, 6, 1};
 const static struct keystate standby_sw = {4, 7, 0};
@@ -126,78 +126,3 @@ void reset_keys(void);
 
 int main(void);
 
-////////////////////////////////////
-//define user functions below here//
-////////////////////////////////////
-
-//optional user functions for execution
-#define __USER//comment this out if you don't want to use any user functions
-#ifdef __USER
-void functions(void);//this determines what user functions to execute, add custom key logic to this
-
-#ifdef __STDBY
-static uint8_t standby = 0;
-static inline void standby_switch(void)
-{
-	standby ^= 1;//0 <--> 1
-	_delay_ms(250);//creates a gap so its hard to cycle it repeatedly
-	return;
-}
-#endif
-
-#define SOLENOID_DISABLE 67
-static uint8_t solenoid = 1; // enables solenoid
-//static uint8_t solenoid = 0; // disables solenoid
-static inline void solenoid_toggle(void)
-{
-	solenoid ^= 0b1;
-	solenoid |= 0b100;
-	solenoid &= 0b101;
-	return;
-}
-
-static inline void send_00(void)
-{
-	usb_keyboard_press(KEY_0, 0);
-	_delay_ms(5);
-	usb_keyboard_press(KEY_0, 0);
-	_delay_ms(70);//delay to prevent spam - a keypress can be upwards of 120ms, but generally around 80ms
-	return;
-}
-static inline void capslock(void)//will enable capslock when both SHIFTL and SHIFTR pressed
-{
-	usb_keyboard_press(KEY_CAPS_LOCK, 0);
-	_delay_ms(110);
-	return;
-}
-static inline void volume(const uint8_t UPorDOWN)
-{
-	if(UPorDOWN == 1)
-	{usb_extra_press(VOL_UP);}
-	if(UPorDOWN == 2)
-	{usb_extra_press(VOL_DOWN);}
-	_delay_ms(70);
-	return;
-}
-static inline void play_pause_media(void)
-{
-	usb_extra_press(PLAY_PAUSE);
-	_delay_ms(70);
-	return;
-}
-static inline void next_prev_track(const uint8_t PREVorNEXT)
-{
-	if(PREVorNEXT == 1)
-	{usb_extra_press(PREV_TRACK);}
-	if(PREVorNEXT == 2)
-	{usb_extra_press(NEXT_TRACK);}
-	_delay_ms(70);
-	return;
-}
-static inline void mute(void)
-{
-	usb_extra_press(MUTE);
-	_delay_ms(70);
-	return;
-}
-#endif

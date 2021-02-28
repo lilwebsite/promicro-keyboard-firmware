@@ -1,3 +1,4 @@
+#include "scanners/drop-in/SN74159N.h"
 //SN74159N is a 4 to 16 line demultiplexer
 
 ///////////////
@@ -54,7 +55,7 @@
 const struct pin demux_pins[DEMUX_IN] = {{F, 4}, {F, 5}, {F, 6}, {F, 7}};
 //A, B, C, D (pins A0, A1, A2, A3)
 
-void init_SN74159N(void)
+void init_IBMPingmaster(void)
 {
 	for(uint8_t x = 0; x < DEMUX_IN - 1; x++)
 	{
@@ -64,7 +65,7 @@ void init_SN74159N(void)
 	return;
 }
 
-void scan_SN74159N(uint8_t row)
+void set_IBMPingmaster(uint8_t row)
 {
 	uint8_t ABCD[4];
 	ABCD[0] = (0b1000 & row)>>3;
