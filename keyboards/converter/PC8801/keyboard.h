@@ -1,6 +1,5 @@
-#define KBD_PC8801
-#define DEMUX_OUT 14
-#define DEMUX_IN 4
-#define COLUMNS 8
-#define ROWS 14
-#define KEYS 
+#include <kbd/globals.h>
+#include "settings.h"
+#include "pinconfig.h"
+
+extern volatile uint8_t DRIVER_ROWS;

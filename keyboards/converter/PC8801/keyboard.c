@@ -1,10 +1,8 @@
+#include "keyboard.h"
+
 void init(void)
 {
-	for(uint8_t x = 0; x < DEMUX_IN - 1; x++)
-	{
-		DRIVER_ROWS = (DRIVER_ROWS<<1);
-		DRIVER_ROWS++;
-	}
+	DRIVER_ROWS = 0b1111;
 	return;
 }
 
