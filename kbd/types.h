@@ -1,3 +1,4 @@
+#include <settings.h>
 #ifndef __TYPES
 struct kbstate
 {
@@ -15,12 +16,12 @@ struct keystate
 	uint8_t pressed;
 };
 
-//struct kblayer
-//{
-//	//whenever this type is accessed the program will know what characters belong to which layer
-//	const uint8_t layer;
-//	const uint8_t matrix[ROWS][COLUMNS];
-//};
+struct kblayer
+{
+	//whenever this type is accessed the program will know what characters belong to which layer
+	const uint8_t layer;
+	const uint8_t matrix[ROWS][COLUMNS];
+};
 
 struct kblayer_key
 {
@@ -34,5 +35,14 @@ struct pin
 	const char port;
 	const uint8_t position;
 };
+
+struct keypress {
+	uint8_t keycode;
+	uint8_t row;
+	uint8_t column;
+};
+
+const inline uint8_t keypress_compare(struct keypress kp1, struct keypress kp2)
+{return (kp1.row == kp2.row) && (kp1.column == kp2.column);}
 #define __TYPES
 #endif
