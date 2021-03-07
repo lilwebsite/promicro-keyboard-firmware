@@ -1,3 +1,6 @@
+#include "matrix.h"
+#include <layout.h>
+
 uint8_t get_layer_key(uint8_t layer_num, uint8_t row, uint8_t column)
 {
 	for(uint8_t x = 0; x < LAYERS; x++)
@@ -82,13 +85,20 @@ void press_release(void)
 	uint8_t found;
 	for(uint8_t x = 0; x < COLUMNS; x++)
 	{
-		if(!get_layer_key(layer->layer, 0xFF, 0xFF))//if this evaluates to 0, something went terribly wrong or the layer does not exist
-		{return;}
 		struct keypress current_key = {
-			get_layer_key(layer->layer, currently_pressing[x].row, currently_pressing[x].column),
+			get_layer_key(0, currently_pressing[x].row, currently_pressing[x].column),
 			row,
 			x
 		};
+		if(get_layer_key(layer->layer, 0xFF, 0xFF))//if this evaluates to 0, something went terribly wrong or the layer does not exist
+		{
+			struct keypress current_key = {
+				get_layer_key(layer->layer, currently_pressing[x].row, currently_pressing[x].column),
+				row,
+				x
+			};
+		}
+
 		if(kbd.row_state)//if a key is being pressed in the row
 		{
 			if(currently_pressing[x].pressed)//if the key is physically being pressed
@@ -127,7 +137,7 @@ void setup_keys(void)
 void reset_keys(void)
 {
 	uint8_t x = 0;
-	
+
 	for(; x < ROWS; x++)
 	{
 		for(uint8_t z = 0; z < COLUMNS; z++)
@@ -141,7 +151,7 @@ void reset_keys(void)
 		currently_pressing[x] = default_state;
 	}
 
-	#if defined __USER
+	#if defined ENABLE_USER
 	shiftcaps = default_state;//used in functions()
 	#endif
 

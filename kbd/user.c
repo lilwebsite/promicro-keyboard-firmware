@@ -1,3 +1,7 @@
+#include "globals.h"
+//#include "matrix.h"
+#include "user.h"
+#include <usb/usb.h>
 
 ////////////////////////////////////
 //define user functions below here//
@@ -34,6 +38,20 @@ void mute(void)
 	return;
 }
 
+uint8_t overrides(void)
+{
+	functions();
+
+	if(standby)
+	{
+		reset_sending();
+		kbsend();
+		return 0;
+	}
+
+	return 1;
+}
+
 void functions(void)
 {
 	for(uint8_t x = 0; x < COLUMNS; x++)
@@ -45,7 +63,6 @@ void functions(void)
 			//add custom logic for user defined functions here//
 			////////////////////////////////////////////////////
 
-			#ifdef ENABLE_STDBY
 			//standby will 'turn off' keyboard using the RESET key (pingmaster)
 			if(keypress.row == standby_sw.row 
 			&& keypress.column == standby_sw.column
@@ -58,7 +75,6 @@ void functions(void)
 
 			if(standby)
 			{continue;}
-			#endif
 
 			#ifdef ENABLE_00
 			//double zero key (pingmaster)
@@ -127,4 +143,3 @@ void functions(void)
 		}
 	}
 }
-#endif
