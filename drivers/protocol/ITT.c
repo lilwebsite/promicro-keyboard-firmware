@@ -1,4 +1,7 @@
-void scan_signal(void)
+#include "ITT.h"
+#include <pinconfig.h>
+
+void scan(void)
 {
 	clock_data ^= 0b1;
 	(PINF & 0b10000) ? (clock_data |= 0b10) : (clock_data &= 0xFD);
@@ -10,7 +13,7 @@ void scan_signal(void)
 		case 0b0:
 		case 0b101:
 			_delay_us(5);
-			continue;
+			return;
 		// if clock is waiting to be low and is low: reset the clock and data read bit
 		case 0b100:
 			clock_data &= 0xF3;
@@ -26,20 +29,20 @@ void scan_signal(void)
 			set_PINX_variable_output(5, B, 1);
 			counter = 0;
 			clock_data |= 0b11100;
-			continue;
+			return;
 		// signal candidate and data / clock is high
 		case 0b010011:
 			if(counter == 131)
 			{
 				counter = 0;
 				clock_data |= 0b101100;
-				continue;
+				return;
 			}
 			set_PINX_variable_output(4, B, 1);
 			counter = 0;
 			clock_data &= 0xCF;
 			clock_data |= 0b1100;
-			continue;
+			return;
 		//if the signal found and there is a data point
 		case 0b110011:
 		case 0b110001:
@@ -71,7 +74,7 @@ void scan_signal(void)
 				{
 					clock_data &= 0xCF;
 					clock_data |= 0b1100;
-					continue;
+					return;
 				}
 			}
 			if(counter == 0)
@@ -83,12 +86,12 @@ void scan_signal(void)
 			clock_data |= 0b100;
 			counter++;
 		default:
-			continue;
+			return;
 	}
 
 	// if no changes in currently pressed keys
 	if((clock_data & 0x80) == 0)
-	{continue;}
+	{return;}
 
 	// if a keypress was detected
 	if((clock_data & 0x40) == 0x40)
@@ -97,7 +100,7 @@ void scan_signal(void)
 	if(received[SOLENOID_DISABLE])
 	{
 		solenoid_toggle();
-		continue;
+		return;
 	}
 
 	for(; counter < 100; counter++)
@@ -120,4 +123,6 @@ void scan_signal(void)
 		solenoid |= 0b100;
 		solenoid &= 0b101;
 	}
+
+	return;
 }
