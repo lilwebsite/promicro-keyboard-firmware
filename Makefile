@@ -23,9 +23,12 @@ DUMP=dump.hex
 #if MAKE_VARS not set the compiler will use defaults predefined in the code
 MAKE_VARS=1
 KEY_ROLLOVER=64
-KEYBOARD=ITT
+#KEYBOARD=ITT
 #KEYBOARD=PC8801
-#KEYBOARD=IBMPingmaster
+KEYBOARD=IBMPingmaster
+DRIVER=SN74159N
+LAYOUT=bigwebsite
+#LAYOUT=H0R1Z0N
 #don't change ENDPOINT_SIZE, PACKET_SIZE or REPORT_COUNT unless you know what you're doing!
 ENDPOINT_SIZE=64
 PACKET_SIZE=64
@@ -40,18 +43,21 @@ OBJCOPY=avr-objcopy
 LDFLAGS=-Wl,-Map=$(strip $@).map -Wl,--start-group -Wl,-lm -Wl,--end-group -Wl,--gc-sections,--print-gc-sections
 ifneq ($(DEBUG), yes)
 #CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections -ffunction-sections -mrelax
-CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections
+#CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections
+CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Werror -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections
 else
 CFLAGS=$(DEFINES) -mmcu=$(MCU) -Og -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields
 endif
 
 #source files
-SRC := $(wildcard kbd/*.c)
-SRC += $(wildcard usb/*.c)
-#SRC += $(wildcard promicro/pinconfig/*.c)
-SRC += promicro/pinlogic.c
+SRC := usb/usb.c
+SRC += $(wildcard keyboards/*/$(KEYBOARD)/keyboard.c)
+SRC += $(wildcard kbd/*.c)
+SRC += $(wildcard promicro/*.c)
+SRC += $(wildcard drivers/*/$(DRIVER).c)
 
-OBJS := $(SRC:%.c=%.o)
+#KBD_OBJS := $(KBD:%.c=%.o)
+OBJS += $(SRC:%.c=%.o)
 
 #compiler functions
 $(BIN).hex: $(BIN).elf
@@ -62,9 +68,10 @@ $(BIN).eep: $(BIN).elf
 
 $(BIN).elf: $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
-	
+
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(GENDEPFLAGS) $< -o $@
+#	$(CC) -E $(CFLAGS) $(GENDEPFLAGS) -I ./ -I $(wildcard keyboards/*/$(KEYBOARD)/) -I $(wildcard layouts/$(KEYBOARD)/$(LAYOUT)) $< -o $@.precompile
+	$(CC) -c $(CFLAGS) $(GENDEPFLAGS) -I ./ -I $(wildcard keyboards/*/$(KEYBOARD)/) -I $(wildcard layouts/$(KEYBOARD)/$(LAYOUT)) $< -o $@
 
 all: $(BIN).hex $(BIN).eep
 
@@ -74,7 +81,7 @@ fullclean:
 
 #clean without removing hex file
 clean:
-	rm -f $(BIN).elf $(OBJS) $(DUMP) $(FUSES) $(BIN).elf.map
+	rm -f $(BIN).elf $(OBJS) $(SRC:%.c=%.o.precompile) $(DUMP) $(FUSES) $(BIN).elf.map 
 
 ##################
 #helper functions#
