@@ -1,5 +1,3 @@
-#include "../kbd/base.h"
-
 #define B 'B'
 #define C 'C'
 #define D 'D'

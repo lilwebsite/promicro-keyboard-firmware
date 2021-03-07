@@ -1,3 +1,6 @@
+#include <kbd/globals.h>
+#include "promicro.h"
+
 uint8_t init_inputs(const struct pin *input_pins)
 {
 	uint8_t pullup = 1;

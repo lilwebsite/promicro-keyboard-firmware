@@ -13,3 +13,6 @@
 // required config; applies to all keyboards
 // add code for init_pins in your keyboard specific c file
 uint8_t init_pins(void);
+
+uint8_t init_inputs(const struct pin *input_pins);
+uint8_t init_promicro(void);

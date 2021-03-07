@@ -1,4 +1,4 @@
-#include "pinlogic.h"
+#include <kbd/globals.h>
 
 //position: what port # to set high/low
 //value: set position high(1) or low(0)
