@@ -48,6 +48,17 @@
 	{1, 1, 1, 1}\
 }
 
+extern uint8_t overrides(void);
+extern void setup_keys(void);
+extern void press_release(void);
+extern volatile uint8_t ispressed[COLUMNS];
+extern volatile uint8_t previous_presses[ROWS][COLUMNS];
+extern volatile struct kbstate kbd;
+extern const struct pin input_pins[COLUMNS];
+extern uint8_t row;
+
 static volatile uint8_t pin_state;
 
 volatile uint8_t DRIVER_ROWS;
+
+void scan(void);
