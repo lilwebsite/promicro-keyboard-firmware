@@ -1,3 +1,10 @@
+#include <kbd/globals.h>
+#include <kbd/matrix.h>
+#include <usb/keys.h>
+#include <kbmatrix/PC8801.h>
+
+#define LAYERS 3
+
 const static struct keystate volume_up = {9, 3, 0};
 const static struct keystate volume_down = {9, 2, 0};
 const static struct keystate mute_key = {9, 1, 0};
@@ -8,7 +15,6 @@ struct kblayer_key layer_keys[LAYERS] = {
 	{2, 0, {9, 4, 0}}//tertiary layer
 };
 
-#define LAYERS 3//edit this if more layers are added
 const struct kblayer PROGMEM kblayer_list[LAYERS] = {
 	{
 		0,//primary layer

@@ -1,15 +1,21 @@
-#define ENABLE_STDBY
-const static struct keystate SHIFTR = {11, 5, 1};
-const static struct keystate SHIFTL = {3, 6, 1};
-const static struct keystate standby_sw = {4, 7, 0};
-const static struct keystate keypad_00 = {6, 7, 0};
-const static struct keystate volume_up = {12, 7, 0};
-const static struct keystate volume_down = {12, 0, 0};
-const static struct keystate prev_track = {11, 7, 0};
-const static struct keystate next_track = {10, 7, 0};
-const static struct keystate play_pause = {15, 6, 0};
+#include <kbd/globals.h>
+#include <kbd/matrix.h>
+#include <usb/keys.h>
+#include <kbmatrix/IBMPingmaster.h>
 
-const static struct kblayer_key layer_keys[LAYERS] = {
+#define LAYERS 2
+
+const struct keystate SHIFTR = {11, 5, 1};
+const struct keystate SHIFTL = {3, 6, 1};
+const struct keystate standby_sw = {4, 7, 0};
+const struct keystate keypad_00 = {6, 7, 0};
+const struct keystate volume_up = {12, 7, 0};
+const struct keystate volume_down = {12, 0, 0};
+const struct keystate prev_track = {11, 7, 0};
+const struct keystate next_track = {10, 7, 0};
+const struct keystate play_pause = {15, 6, 0};
+
+const struct kblayer_key layer_keys[LAYERS] = {
 	base_layer,
 	{1, 0, {15, 7, 0}}
 };
@@ -37,7 +43,7 @@ const struct kblayer PROGMEM kblayer_list[LAYERS] = {
 			0,			KEY_F12,	BACKSPACE,	KEY_LEFT,	KEY_RIGHT,	KEY_DOWN,	KEY_F10,	0,			//12 {E18, F12, backspace, left, right, down, F10, E14}
 			KEY_UP,		KEY_5,		KEY_F2,		KEY_F6,		KEY_F9,		KEY_1,		KEY_F7,		KEY_F3,		//13 {up, numpad 5, F2, F6, F9, numpad 1, F7, F3}
 			KEY_HOME,	KEY_7,		KEY_F1,		KEY_F5,		KEY_4,		KEY_2,		KEY_F8,		KEY_F4,		//14 {home, numpad 7, F1, F5, numpad 4, numpad 2, F8, F4}
-			KEY_END,	KEY_8,		DEL,		KEY_9,		KEY_6,		KEY_3,		0,			L_TOGGLE1	//15 {end, numpad 8, del, numpad 9, numpad 6, numpad 3, E19, E20}
+			KEY_END,	KEY_8,		DEL,		KEY_9,		KEY_6,		KEY_3,		0,			0//15 {end, numpad 8, del, numpad 9, numpad 6, numpad 3, E19, E20}
 		)
 	},
 	
@@ -62,7 +68,7 @@ const struct kblayer PROGMEM kblayer_list[LAYERS] = {
 			0,			KEY_F12,	BACKSPACE,	KEY_LEFT,	KEY_RIGHT,	KEY_DOWN,	KEY_F10,	0,			//12
 			KEY_UP,		KEYPAD_5,	KEY_F2,		KEY_F6,		KEY_F9,		KEYPAD_1,	KEY_F7,		KEY_F3,		//13
 			KEY_HOME,	KEYPAD_7,	KEY_F1,		KEY_F5,		KEYPAD_4,	KEYPAD_2,	KEY_F8,		KEY_F4,		//14
-			KEY_END,	KEYPAD_8,	DEL,		KEYPAD_9,	KEYPAD_6,	KEYPAD_3,	0,			L_TOGGLE1	//15
+			KEY_END,	KEYPAD_8,	DEL,		KEYPAD_9,	KEYPAD_6,	KEYPAD_3,	0,			0			//15
 		)
 	}
 };
