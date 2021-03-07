@@ -24,8 +24,8 @@
 // Version 1.0: Initial Release
 // Version 1.1: Add support for Teensy 2.0
 
-#define USB_SERIAL_PRIVATE_INCLUDE
-#include "usb_keyboard.h"
+#define USB_PRIVATE_INCLUDE
+#include "usb.h"
 
 //Mac OS-X and Linux automatically load the correct drivers.  On
 //Windows, even though the driver is supplied by Microsoft, an
@@ -360,30 +360,30 @@ void kbd_press_release(uint8_t press, struct keypress key)
 	{
 		case KEY_LEFT_CTRL: (press)
 			? (keyboard_modifier_keys |= (1<<0)) : (keyboard_modifier_keys &= ~(1<<0));
-			break;
+			return;
 		case KEY_LEFT_SHIFT: (press)
 			? (keyboard_modifier_keys |= (1<<1)) : (keyboard_modifier_keys &= ~(1<<1));
-			break;
+			return;
 		case KEY_LEFT_ALT: (press)
 			? (keyboard_modifier_keys |= (1<<2)) : (keyboard_modifier_keys &= ~(1<<2));
-			break;
+			return;
 		case KEY_LEFT_GUI: (press)
 			? (keyboard_modifier_keys |= (1<<3)) : (keyboard_modifier_keys &= ~(1<<3));
-			break;
+			return;
 		case KEY_RIGHT_CTRL: (press)
 			? (keyboard_modifier_keys |= (1<<4)) : (keyboard_modifier_keys &= ~(1<<4));
-			break;
+			return;
 		case KEY_RIGHT_SHIFT: (press)
 			? (keyboard_modifier_keys |= (1<<5)) : (keyboard_modifier_keys &= ~(1<<5));
-			break;
+			return;
 		case KEY_RIGHT_ALT: (press)
 			? (keyboard_modifier_keys |= (1<<6)) : (keyboard_modifier_keys &= ~(1<<6));
-			break;
+			return;
 		case KEY_RIGHT_GUI: (press)
 			? (keyboard_modifier_keys |= (1<<7)) : (keyboard_modifier_keys &= ~(1<<7));
-			break;
+			return;
 	}
-	
+
 	for(uint8_t x = 0; x < KEY_ROLLOVER; x++)
 	{
 		if(press)

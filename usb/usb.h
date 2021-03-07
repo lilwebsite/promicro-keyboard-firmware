@@ -1,7 +1,7 @@
 #ifndef usb_serial_h__
 #define usb_serial_h__
-
 #include <util/delay.h>
+#include <kbd/globals.h>
 #include "types.h"
 
 #define STR_MANUFACTURER	L"PROMICRO"
@@ -25,12 +25,13 @@ uint8_t usb_extra_send(uint8_t report_id, uint16_t data);
 extern uint8_t keyboard_modifier_keys;
 extern struct keypress keyboard_keys[KEY_ROLLOVER];
 extern uint16_t consumer_key;
+#endif
 
 //defintions for keycodes
 #include "keys.h"
 
-//Everything below this point is only intended for usb_serial.c
-#ifdef USB_SERIAL_PRIVATE_INCLUDE
+//everything below this point is only used by usb.c
+#ifdef USB_PRIVATE_INCLUDE
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
@@ -97,5 +98,4 @@ const uint16_t consumer_lookup[7] = {
 
 struct keypress default_press = {0, 0xFF, 0xFF};
 
-#endif
 #endif
