@@ -5,7 +5,7 @@ extern uint8_t init_inputs(const struct pin *input_pins);
 const struct pin demux_pins[DEMUX_IN] = {{F, 4}, {F, 5}, {F, 6}, {F, 7}};
 
 // a list of pins to set as inputs
-static const struct pin input_pins[COLUMNS] =
+const struct pin input_pins[COLUMNS] =
 {
 	{D, 1}, // pin 2
 	{D, 0}, // pin 3

@@ -1,5 +1,4 @@
 #include "globals.h"
-//#include "matrix.h"
 #include "user.h"
 #include <usb/usb.h>
 
@@ -11,16 +10,6 @@ void capslock(void)//will enable capslock when both SHIFTL and SHIFTR pressed
 {
 	usb_keyboard_press(KEY_CAPS_LOCK, 0);
 	_delay_ms(110);
-	return;
-}
-
-void volume(const uint8_t UPorDOWN)
-{
-	if(UPorDOWN == 1)
-	{usb_extra_press(VOL_UP);}
-	if(UPorDOWN == 2)
-	{usb_extra_press(VOL_DOWN);}
-	_delay_ms(70);
 	return;
 }
 
@@ -52,6 +41,11 @@ uint8_t overrides(void)
 	return 1;
 }
 
+void reset_user(void)
+{
+	shiftcaps = default_state;
+}
+
 void functions(void)
 {
 	for(uint8_t x = 0; x < COLUMNS; x++)
@@ -63,6 +57,7 @@ void functions(void)
 			//add custom logic for user defined functions here//
 			////////////////////////////////////////////////////
 
+			#ifdef STANDBY
 			//standby will 'turn off' keyboard using the RESET key (pingmaster)
 			if(keypress.row == standby_sw.row 
 			&& keypress.column == standby_sw.column
@@ -75,6 +70,7 @@ void functions(void)
 
 			if(standby)
 			{continue;}
+			#endif
 
 			#ifdef ENABLE_00
 			//double zero key (pingmaster)
@@ -90,10 +86,10 @@ void functions(void)
 
 			#ifdef ENABLE_SHIFT_CAPSLOCK
 			//CAPSLOCK on simultaneous SHIFTL and SHIFTR press
-			if((key.row == SHIFTL.row
-			&& key.column == SHIFTL.column)
-			|| (key.row == SHIFTR.row
-			&& key.column == SHIFTR.column))
+			if((keypress.row == SHIFTL.row
+			&& keypress.column == SHIFTL.column)
+			|| (keypress.row == SHIFTR.row
+			&& keypress.column == SHIFTR.column))
 			{
 				if(shiftcaps.row == default_state.row
 				&& shiftcaps.column == default_state.column)
@@ -105,27 +101,24 @@ void functions(void)
 			}
 			#endif
 
-			#if ENABLE_VOLUME_KEYS
+			#ifdef ENABLE_VOLUME_KEYS
 			//volume up/down buttons
-			if(volume_key(keypress))
-			{volume(volume_key(keypress)); continue;}
+			if(keypress.row == volume_up.row
+			&& keypress.column == volume_up.column)
+			{usb_extra_press(VOL_UP); _delay_ms(70);}
+			if(keypress.row == volume_down.row
+			&& keypress.column == volume_down.column)
+			{usb_extra_press(VOL_DOWN); _delay_ms(70);}
 			#endif
 
 			#ifdef ENABLE_TRACK_KEYS
-			//prev/next track buttons
-			if(prevnext_key(keypress))
-			//{next_prev_track(prevnext_key(keypress)); continue;}
-			{
-				//determines if a key is a prev/next track key and sends their value (1 = prev / 2 = next)
-				if(key.row == prev_track.row
-				&& key.column == prev_track.column)
-				{usb_extra_press(PREV_TRACK);}
-				if(key.row == next_track.row
-				&& key.column == next_track.column)
-				{usb_extra_press(NEXT_TRACK);}
-				_delay_ms(70);
-				continue;
-			}
+			if(keypress.row == prev_track.row
+			&& keypress.column == prev_track.column)
+			{usb_extra_press(PREV_TRACK); _delay_ms(70);}
+			if(keypress.row == next_track.row
+			&& keypress.column == next_track.column)
+			{usb_extra_press(NEXT_TRACK); _delay_ms(70);}
+			continue;
 			#endif
 
 			#ifdef ENABLE_PLAY_PAUSE

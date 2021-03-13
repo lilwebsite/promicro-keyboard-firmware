@@ -43,7 +43,7 @@ const struct kblayer PROGMEM kblayer_list[LAYERS] = {
 			0,			KEY_F12,	BACKSPACE,	KEY_LEFT,	KEY_RIGHT,	KEY_DOWN,	KEY_F10,	0,			//12 {E18, F12, backspace, left, right, down, F10, E14}
 			KEY_UP,		KEY_5,		KEY_F2,		KEY_F6,		KEY_F9,		KEY_1,		KEY_F7,		KEY_F3,		//13 {up, numpad 5, F2, F6, F9, numpad 1, F7, F3}
 			KEY_HOME,	KEY_7,		KEY_F1,		KEY_F5,		KEY_4,		KEY_2,		KEY_F8,		KEY_F4,		//14 {home, numpad 7, F1, F5, numpad 4, numpad 2, F8, F4}
-			KEY_END,	KEY_8,		DEL,		KEY_9,		KEY_6,		KEY_3,		0,			0//15 {end, numpad 8, del, numpad 9, numpad 6, numpad 3, E19, E20}
+			KEY_END,	KEY_8,		DEL,		KEY_9,		KEY_6,		KEY_3,		0,			0			//15 {end, numpad 8, del, numpad 9, numpad 6, numpad 3, E19, E20}
 		)
 	},
 	

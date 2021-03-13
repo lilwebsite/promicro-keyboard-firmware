@@ -17,10 +17,9 @@ int main(void)
 
 		scan();
 
-		#ifdef ENABLE_LAYERS
+		//#ifdef ENABLE_LAYERS
 		//if any of the layer keys were pressed this applies them to the variable `layer`
-		layer_select();
-		#endif
+		//#endif
 
 		//press_release();
 

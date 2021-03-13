@@ -51,6 +51,7 @@
 extern uint8_t overrides(void);
 extern void setup_keys(void);
 extern void press_release(void);
+extern void layer_select(void);
 extern volatile uint8_t ispressed[COLUMNS];
 extern volatile uint8_t previous_presses[ROWS][COLUMNS];
 extern volatile struct kbstate kbd;

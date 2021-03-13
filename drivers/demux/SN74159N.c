@@ -32,6 +32,8 @@ void scan(void)
 		//figure out what is being pressed in the row
 		setup_keys();
 
+		layer_select();
+
 		if(!overrides())
 		{continue;}
 

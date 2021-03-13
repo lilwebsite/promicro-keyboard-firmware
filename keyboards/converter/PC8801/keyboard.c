@@ -6,7 +6,7 @@ void init(void)
 	return;
 }
 
-void set_PC8801(uint8_t row)
+void set(uint8_t row)
 {
 	uint8_t ABCD[4];
 	ABCD[0] = (0b1000 & row)>>3;

@@ -3,22 +3,21 @@
 
 uint8_t get_layer_key(uint8_t layer_num, uint8_t row, uint8_t column)
 {
+	//if row and column are both max (255) then we are checking if layer exists
+	//if(row == 0xFF && column == 0xFF)
+	//{
+	//	for(uint8_t x = 0; x < LAYERS; x++)
+	//	{
+	//		if(pgm_read_byte(&(kblayer_list[x].layer)) == layer_num)
+	//		{return 1;}
+	//	}
+	//	return 0;
+	//}
+
 	for(uint8_t x = 0; x < LAYERS; x++)
 	{
-		//if row and column are both max (255) then we are checking if layer exists
-		if(row == 0xFF && column == 0xFF)
-		{
-			for(uint8_t x = 0; x < LAYERS; x++)
-			{
-				if(pgm_read_byte(&(kblayer_list[x].layer)) == layer_num)
-				{return 1;}
-			}
-		}
-		else
-		{
-			if(pgm_read_byte(&(kblayer_list[x].layer)) == layer_num)
-			{return pgm_read_byte(&(kblayer_list[x].matrix[row][column]));}
-		}
+		if(pgm_read_byte(&(kblayer_list[x].layer)) == layer_num)
+		{return pgm_read_byte(&(kblayer_list[x].matrix[row][column]));}
 	}
 	return 0;
 }
@@ -85,19 +84,19 @@ void press_release(void)
 	uint8_t found;
 	for(uint8_t x = 0; x < COLUMNS; x++)
 	{
+		//struct keypress current_key = {
+		//	get_layer_key(0, currently_pressing[x].row, currently_pressing[x].column),
+		//	row,
+		//	x
+		//};
+		//if(get_layer_key(layer->layer, 0xFF, 0xFF))//if this evaluates to 0, something went terribly wrong or the layer does not exist
+		//{return;}
+
 		struct keypress current_key = {
-			get_layer_key(0, currently_pressing[x].row, currently_pressing[x].column),
+			get_layer_key(layer->layer, currently_pressing[x].row, currently_pressing[x].column),
 			row,
 			x
 		};
-		if(get_layer_key(layer->layer, 0xFF, 0xFF))//if this evaluates to 0, something went terribly wrong or the layer does not exist
-		{
-			struct keypress current_key = {
-				get_layer_key(layer->layer, currently_pressing[x].row, currently_pressing[x].column),
-				row,
-				x
-			};
-		}
 
 		if(kbd.row_state)//if a key is being pressed in the row
 		{
@@ -151,9 +150,7 @@ void reset_keys(void)
 		currently_pressing[x] = default_state;
 	}
 
-	#if defined ENABLE_USER
-	shiftcaps = default_state;//used in functions()
-	#endif
+	reset_user();
 
 	return;
 }

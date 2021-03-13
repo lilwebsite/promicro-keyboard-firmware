@@ -107,10 +107,11 @@
 #define KEYPAD_9		97
 #define KEYPAD_0		98
 #define KEYPAD_PERIOD	99
+#define KEY_APP			101
+#define KEYPAD_EQUAL	103
 
 //SPECIAL - may or may not work
 #define KEYPAD_COMMA	133
-#define KEY_APP			101
 #define LOCKING_CAPS	130
 
 //Media key codes are not real scan codes, they must be translated to a 16
@@ -163,6 +164,7 @@
 #define KEYPAD_ENT KEYPAD_ENTER
 #define KEYPAD_PRD KEYPAD_PERIOD
 #define KEYPAD_SLH KEYPAD_SLASH
+#define KEYPAD_EQL KEYPAD_EQUAL
 
 // special
 #define KEYPAD_COM KEYPAD_COMMA
