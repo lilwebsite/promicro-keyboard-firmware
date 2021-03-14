@@ -26,7 +26,7 @@ l1, l2                         /*11*/\
  {i1, i2, i3, i4, i5, i6, i7, i8},\
  {j1, j2, j3, j4, j5, j6, j7, j8},\
  {k1, k2, k3, k4, k5, k6, k7, k8},\
- {l1, l2}}
+ {l1, l2, NC, NC, NC, NC, NC, NC}}
 // extended layout only
 // {m1, m2, m3, m4, m5, m6, m7, m8},
-// {n1, n2, n3, n4}}
+// {n1, n2, n3, n4, NC, NC, NC, NC}}
