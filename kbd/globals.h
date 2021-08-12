@@ -1,6 +1,7 @@
 //includes
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include <avr/wdt.h>
 #include <util/setbaud.h>
 #include <util/delay.h>
 #include "types.h"

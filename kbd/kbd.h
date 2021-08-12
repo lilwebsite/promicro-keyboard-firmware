@@ -3,6 +3,8 @@
 #include "../promicro/promicro.h"
 #include "../usb/usb.h"
 
+extern uint8_t reset;
+
 extern void functions(void);
 
 extern uint8_t init_promicro(void);

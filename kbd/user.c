@@ -2,6 +2,8 @@
 #include "user.h"
 #include <usb/usb.h>
 
+uint8_t reset;
+
 ////////////////////////////////////
 //define user functions below here//
 ////////////////////////////////////
@@ -118,20 +120,25 @@ void functions(void)
 			if(keypress.row == next_track.row
 			&& keypress.column == next_track.column)
 			{usb_extra_press(NEXT_TRACK); _delay_ms(70);}
-			continue;
 			#endif
 
 			#ifdef ENABLE_PLAY_PAUSE
 			//play/pause button
 			if(keypress.row == play_pause.row
 			&& keypress.column == play_pause.column)
-			{play_pause_media(); continue;}
+			{play_pause_media();}
 			#endif
 
 			#ifdef ENABLE_MUTE
 			if(keypress.row == mute_key.row
 			&& keypress.column == mute_key.column)
-			{mute(); continue;}
+			{mute();}
+			#endif
+
+			#ifdef ENABLE_RESET
+			if(keypress.row == reset_key.row
+			&& keypress.column == reset_key.column)
+			{reset = 1;}
 			#endif
 		}
 	}

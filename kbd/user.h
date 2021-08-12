@@ -26,6 +26,9 @@ extern const struct keystate play_pause;
 extern const struct keystate prev_track;
 extern const struct keystate next_track;
 #endif
+#ifdef ENABLE_RESET
+extern const struct keystate reset_key;
+#endif
 
 static uint8_t standby = 0;
 static struct keystate shiftcaps;

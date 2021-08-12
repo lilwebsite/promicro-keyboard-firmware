@@ -16,12 +16,18 @@ int main(void)
 		kbd.state = 0;
 
 		scan();
-
 		//#ifdef ENABLE_LAYERS
 		//if any of the layer keys were pressed this applies them to the variable `layer`
 		//#endif
 
-		//press_release();
+		if(reset)
+		{
+			do
+			{
+				wdt_enable(WDTO_15MS);
+				for(;;) {}
+			} while(0);
+		}
 
 		//re-initialize the inputs
 		init_inputs(input_pins);

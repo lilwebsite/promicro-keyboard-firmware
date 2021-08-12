@@ -7,7 +7,8 @@
 
 const struct keystate SHIFTR = {11, 5, 1};
 const struct keystate SHIFTL = {3, 6, 1};
-const struct keystate standby_sw = {4, 7, 0};
+//const struct keystate standby_sw = {4, 7, 0};
+const struct keystate reset_key = {4, 7, 0};
 const struct keystate keypad_00 = {6, 7, 0};
 const struct keystate volume_up = {12, 7, 0};
 const struct keystate volume_down = {12, 0, 0};

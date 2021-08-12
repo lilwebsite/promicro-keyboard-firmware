@@ -4,7 +4,8 @@
 #define ROWS 16
 #define KEYS 102
 
-#define STANDBY
+//#define STANDBY
+#define ENABLE_RESET
 #define ENABLE_00
 #define ENABLE_SHIFT_CAPSLOCK
 #define ENABLE_VOLUME_KEYS
