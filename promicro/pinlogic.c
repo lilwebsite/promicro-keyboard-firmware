@@ -90,7 +90,7 @@ void set_PINX_variable_output(uint8_t position, const char port, uint8_t output)
 {
 	set_PORTX_bit(position, output, port);
 	set_DDRX_bit(position, 1, port);//sets direction to output
-	return;	
+	return;
 }
 
 void set_PINX_output(uint8_t position, const char port)
