@@ -4,6 +4,8 @@
 #include <kbd/globals.h>
 #include "types.h"
 
+//#define DEBUG_PRINT
+
 #define STR_MANUFACTURER	L"PROMICRO"
 #define STR_PRODUCT			L"PROMICRO KEYBOARD"
 
@@ -21,6 +23,12 @@ uint8_t prepare_send(const uint8_t endpoint);
 uint8_t usb_keyboard_send(void);
 uint8_t usb_extra_consumer_send(void);
 uint8_t usb_extra_send(uint8_t report_id, uint16_t data);
+
+#ifdef DEBUG_PRINT
+void print(const char *s);
+int8_t usb_debug_putchar(uint8_t c);	// transmit a character
+void usb_debug_flush_output(void);	// immediately transmit any buffered output
+#endif
 
 extern uint8_t keyboard_modifier_keys;
 extern struct keypress keyboard_keys[KEY_ROLLOVER];
