@@ -48,6 +48,7 @@ endif
 
 #source files
 SRC := usb/usb.c
+SRC += drivers/twi/twi.c
 SRC += $(wildcard keyboards/*/$(KEYBOARD)/keyboard.c)
 SRC += $(wildcard kbd/*.c)
 SRC += $(wildcard promicro/*.c)
