@@ -22,13 +22,13 @@ uint8_t twi_check_status(uint8_t expected)
 	return twi_failed;
 }
 
-void twi_init(void)
+void twi_init()
 {
 	TWBR = 0x0F;
-	set_PORTX_bit(D, 1, 2);
-	set_DDRX_bit(D, 1, 2);
-	set_PORTX_bit(D, 1, 3);
-	set_DDRX_bit(D, 1, 3);
+	set_PORTX_bit(1, D, 1);
+	set_DDRX_bit(1, D, 1);
+	set_PORTX_bit(0, D, 1);
+	set_DDRX_bit(0, D, 1);
 
 	twi_buffer_index = 0;
 }
@@ -98,7 +98,7 @@ void twi_send(uint8_t message)
 	TWCR =  (1 << TWINT) |
 			(1 << TWEN);
 	if(message == twi_buffer[0] | 1)
-	{set_PINX_input(D, 2, 0);}
+	{set_PINX_input(1, D, 0);}
 	while(!(TWCR & (1 << TWINT)));
 }
 
