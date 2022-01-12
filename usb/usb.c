@@ -61,6 +61,13 @@
 #define EXTRA_SIZE			8
 #define EXTRA_BUFFER		EP_DOUBLE_BUFFER
 
+#ifdef DEBUG_PRINT
+#define DEBUG_TX_INTERFACE	2
+#define DEBUG_TX_ENDPOINT	3
+#define DEBUG_TX_SIZE		32
+#define DEBUG_TX_BUFFER		EP_DOUBLE_BUFFER
+#endif
+
 
 static const uint8_t PROGMEM endpoint_config_table[] = {
 	KEYBOARD_ENDPOINT, EP_TYPE_INTERRUPT_IN, EP_SIZE(PACKET_SIZE) | KEYBOARD_BUFFER,
@@ -296,7 +303,7 @@ static const struct usb_string_descriptor_struct PROGMEM string2 = {
 
 //This table defines which descriptor data is sent for each specific
 //request from the host (in wValue and wIndex).
-static const struct descriptor_list_struct PROGMEM descriptor_list[9] = {
+static const struct descriptor_list_struct PROGMEM descriptor_list[] = {
 	//DEVICE descriptor
 	{0x0100, 0x0000, device_descriptor, sizeof(device_descriptor)},
 	//CONFIGURATION descriptor

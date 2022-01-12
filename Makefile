@@ -26,6 +26,8 @@ KEY_ROLLOVER=64
 KEYBOARD=IBMPingmaster
 DRIVER=SN74159N
 LAYOUT=bigwebsite
+# set to yes if you want to be able to print debug info using hid_listen
+DEBUG_PRINT=yes
 #don't change ENDPOINT_SIZE, PACKET_SIZE or REPORT_COUNT unless you know what you're doing!
 ENDPOINT_SIZE=64
 PACKET_SIZE=64
@@ -38,6 +40,9 @@ BIN=kbd
 CC=avr-gcc
 OBJCOPY=avr-objcopy
 LDFLAGS=-Wl,-Map=$(strip $@).map -Wl,--start-group -Wl,-lm -Wl,--end-group -Wl,--gc-sections,--print-gc-sections
+ifeq ($(DEBUG_PRINT), yes)
+DEFINES+= -DDEBUG_PRINT
+endif
 ifneq ($(DEBUG), yes)
 #CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections -ffunction-sections -mrelax
 #CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections
