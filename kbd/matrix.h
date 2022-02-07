@@ -3,8 +3,12 @@
 #include <usb/usb.h>
 
 #ifndef __MATRIX
+#define __MATRIX
 volatile struct kbstate kbd = {0, 0, 0, 0};//last state, current state, row state, has state changed
 volatile uint8_t ispressed[COLUMNS];
+
+#ifndef NO_MATRIX
+void reset_keys(void);
 
 struct keystate default_state = {0xFF, 0xFF, 0};//can't match any matrix so will never be pressed
 
@@ -23,7 +27,6 @@ void layer_select(void);
 void layer_cycle(void);
 
 void press_release(void);
-void reset_keys(void);
 extern void reset_user(void);
-#define __MATRIX
+#endif
 #endif

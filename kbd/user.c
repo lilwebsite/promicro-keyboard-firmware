@@ -31,7 +31,10 @@ void mute(void)
 
 uint8_t overrides(void)
 {
+	// temporary until I fix it
+	#ifndef NO_MATRIX
 	functions();
+	#endif
 
 	if(standby)
 	{
@@ -48,6 +51,7 @@ void reset_user(void)
 	shiftcaps = default_state;
 }
 
+#ifndef NO_MATRIX
 void functions(void)
 {
 	for(uint8_t x = 0; x < COLUMNS; x++)
@@ -143,3 +147,4 @@ void functions(void)
 		}
 	}
 }
+#endif

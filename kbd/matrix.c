@@ -1,3 +1,4 @@
+#ifndef NO_MATRIX
 #include "matrix.h"
 #include <layout.h>
 
@@ -154,3 +155,5 @@ void reset_keys(void)
 
 	return;
 }
+
+#endif

@@ -1,10 +1,11 @@
 #include "ITT.h"
-#include <pinconfig.h>
+#include <layout.h>
 
 void scan(void)
 {
+
 	clock_data ^= 0b1;
-	(PINF & 0b10000) ? (clock_data |= 0b10) : (clock_data &= 0xFD);
+	read_PINX_bit(4, F) ? (clock_data |= 0b10) : (clock_data &= 0xFD);
 	set_PINX_variable_output(7, F, (clock_data & 0b1));
 
 	switch(clock_data & 0b101)
@@ -12,7 +13,7 @@ void scan(void)
 		// if clock is still high and clock was already read or clock is low
 		case 0b0:
 		case 0b101:
-			_delay_us(5);
+			_delay_us(20);
 			return;
 		// if clock is waiting to be low and is low: reset the clock and data read bit
 		case 0b100:
@@ -21,24 +22,22 @@ void scan(void)
 			break;
 	}
 
-	init_pins();
 	switch(clock_data & 0x3F)
 	{
 		// first step / reset stage
 		case 0b11:
-			set_PINX_variable_output(5, B, 1);
 			counter = 0;
 			clock_data |= 0b11100;
 			return;
-		// signal candidate and data / clock is high
+		// signal candidate, data / clock are both high
 		case 0b010011:
+			// if the counter is at the end
 			if(counter == 131)
 			{
 				counter = 0;
 				clock_data |= 0b101100;
 				return;
 			}
-			set_PINX_variable_output(4, B, 1);
 			counter = 0;
 			clock_data &= 0xCF;
 			clock_data |= 0b1100;
@@ -46,30 +45,18 @@ void scan(void)
 		//if the signal found and there is a data point
 		case 0b110011:
 		case 0b110001:
-			if(counter < 30)
+			if(counter != 130)
 			{
-				clock_data &= 0x3F;
-				if(clock_data & 0b10)
-				{
-					counter = 0;
-					clock_data &= 0xCF;
-					clock_data |= 0b1100;
-					break;
-				}
-			}
-			else if(counter != 130)
-			{
-				set_PINX_variable_output(6, C, 1);
 				clock_data |= (0b10 & clock_data) << 5;
-				clock_data |= (received[counter - 30] ^ ((0b10 & clock_data) >> 1)) << 7;
+				clock_data |= (received[counter] ^ ((0b10 & clock_data) >> 1)) << 7;
 				pressed_counter += (0b10 & clock_data) >> 1;
-				received[counter - 30] = ((0b10 & clock_data) >> 1);
+				received[counter] = ((0b10 & clock_data) >> 1);
 			}
 			if(counter == 131)
 			{
 				counter = 0;
 				if(clock_data & 0b10)
-				{set_PINX_variable_output(7, D, 1); break;}
+				{break;}
 				else
 				{
 					clock_data &= 0xCF;
@@ -79,8 +66,11 @@ void scan(void)
 			}
 			if(counter == 0)
 			{
+				if(last_pressed_count != pressed_counter || !pressed_counter)
+				{kbsend();}
 				last_pressed_count = pressed_counter;
 				pressed_counter = 0;
+				clock_data &= 0x3F;
 			}
 		case 0b010001:
 			clock_data |= 0b100;
@@ -93,23 +83,24 @@ void scan(void)
 	if((clock_data & 0x80) == 0)
 	{return;}
 
-	// if a keypress was detected
-	if((clock_data & 0x40) == 0x40)
-	{solenoid |= 0b10; solenoid &= 0b11;}
+	reset_sending();
 
 	if(received[SOLENOID_DISABLE])
 	{
 		solenoid_toggle();
-		return;
 	}
 
-	for(; counter < 100; counter++)
+	for(; counter < COLUMNS; counter++)
 	{
-		set_PINX_variable_output(6, E, received[counter]);
 		struct keypress target = {keymap[counter], counter, counter};
 		kbd_press_release(received[counter], target);
 	}
 	counter = 0;
+	
+	#if NO_SOLENOID==0
+	// if a keypress was detected
+	if((clock_data & 0x40) == 0x40)
+	{solenoid = 0b11;}
 
 	if((solenoid & 0b111) == 0b11
 	&& pressed_counter >= (last_pressed_count + 1))
@@ -120,9 +111,9 @@ void scan(void)
 		set_PINX_variable_output(7, F, 1);
 		set_PINX_variable_output(7, F, 0);
 		set_PINX_variable_output(6, F, 0);
-		solenoid |= 0b100;
-		solenoid &= 0b101;
+		solenoid = 0b101;
 	}
+	#endif
 
 	return;
 }

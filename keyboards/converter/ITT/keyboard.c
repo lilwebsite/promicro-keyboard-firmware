@@ -1,3 +1,5 @@
+#include "keyboard.h"
+
 void solenoid_toggle(void)
 {
 	solenoid ^= 0b1;

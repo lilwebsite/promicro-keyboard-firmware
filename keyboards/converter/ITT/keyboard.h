@@ -1,3 +1,7 @@
+#include <kbd/globals.h>
+#include "settings.h"
+#include "pinconfig.h"
+
 static uint8_t data_lines;
 static uint8_t counter;
 static uint8_t last_pressed_count;
@@ -19,3 +23,5 @@ static uint8_t clock_data;
 // 0010 -> trigger solenoid
 // 0100 -> solenoid triggered
 static uint8_t solenoid;
+
+void solenoid_toggle(void);
