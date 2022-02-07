@@ -120,12 +120,13 @@
 //NEEDS TO BE DEFINED IN ORDER OF THE ENTRIES IN THE CONSUMER_LOOKUP ARRAY
 //you can find that array in usb_keyboard.h
 #define PLAY_PAUSE		0x00
-#define STOP			0x01
-#define PREV_TRACK		0x02
-#define NEXT_TRACK		0x03
-#define MUTE			0x04
-#define VOL_UP			0x05
-#define VOL_DOWN		0x06
+#define SKIP			0x01
+#define STOP			0x02
+#define PREV_TRACK		0x03
+#define NEXT_TRACK		0x04
+#define MUTE			0x05
+#define VOL_UP			0x06
+#define VOL_DOWN		0x07
 
 //renamed for convenience
 #define LCTRL KEY_LEFT_CTRL

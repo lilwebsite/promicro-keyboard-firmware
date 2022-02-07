@@ -1,9 +1,12 @@
-extern volatile struct keystate currently_pressing[COLUMNS];
+#include "../usb/usb.h"
+
+extern struct keystate currently_pressing[COLUMNS];
 extern const struct kblayer_key *layer;
 extern struct keystate default_state;
 
 uint8_t overrides(void);
 void functions(void);
+extern uint8_t received[COLUMNS];
 
 #ifdef STANDBY
 extern const struct keystate standby_sw;
@@ -28,6 +31,27 @@ extern const struct keystate next_track;
 #endif
 #ifdef ENABLE_RESET
 extern const struct keystate reset_key;
+#endif
+#ifdef UNDO_BUTTON
+extern const struct keystate undo_key;
+#endif
+#ifdef REDO_BUTTON
+extern const struct keystate redo_key;
+#endif
+#ifdef COPY_BUTTON
+extern const struct keystate copy_key;
+#endif
+#ifdef CUT_BUTTON
+extern const struct keystate cut_key;
+#endif
+#ifdef PASTE_BUTTON
+extern const struct keystate paste_key;
+#endif
+#ifdef SKIP_BUTTON
+extern const struct keystate skip_key;
+#endif
+#ifdef STOP_BUTTON
+extern const struct keystate stop_key;
 #endif
 
 static uint8_t standby = 0;

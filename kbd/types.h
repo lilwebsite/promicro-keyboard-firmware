@@ -16,12 +16,14 @@ struct keystate
 	uint8_t pressed;
 };
 
+#ifndef NO_MATRIX
 struct kblayer
 {
 	//whenever this type is accessed the program will know what characters belong to which layer
 	const uint8_t layer;
 	const uint8_t matrix[ROWS][COLUMNS];
 };
+#endif
 
 struct kblayer_key
 {
@@ -36,6 +38,7 @@ struct pin
 	const uint8_t position;
 };
 
+// TODO: potentially could combine keypress and keystate types into one type
 struct keypress {
 	uint8_t keycode;
 	uint8_t row;
@@ -44,13 +47,5 @@ struct keypress {
 
 const inline uint8_t keypress_compare(struct keypress kp1, struct keypress kp2)
 {return (kp1.row == kp2.row) && (kp1.column == kp2.column);}
-
-struct twi_target {
-	uint8_t slave;
-	uint8_t addr;
-	uint8_t rw;
-	uint8_t data;
-};
-
 #define __TYPES
 #endif

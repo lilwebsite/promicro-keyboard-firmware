@@ -487,7 +487,7 @@ uint8_t usb_keyboard_press(uint8_t key, uint8_t modifier)
 	uint8_t t2 = keyboard_modifier_keys;
 	
 	//send the key specified
-	keyboard_modifier_keys = modifier;
+	keyboard_modifier_keys = 1 << (modifier ^ 0xE0); // TODO: temporary fix
 	keyboard_keys[0] = (struct keypress){key, 0, 0};
 	r = usb_keyboard_send();
 	

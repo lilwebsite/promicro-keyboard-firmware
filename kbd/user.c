@@ -15,12 +15,12 @@ void capslock(void)//will enable capslock when both SHIFTL and SHIFTR pressed
 	return;
 }
 
-void play_pause_media(void)
-{
-	usb_extra_press(PLAY_PAUSE);
-	_delay_ms(70);
-	return;
-}
+//void play_pause_media(void)
+//{
+//	usb_extra_press(PLAY_PAUSE);
+//	_delay_ms(70);
+//	return;
+//}
 
 void mute(void)
 {
@@ -31,7 +31,10 @@ void mute(void)
 
 uint8_t overrides(void)
 {
+	// temporary until I fix it
+	//#ifndef NO_MATRIX
 	functions();
+	//#endif
 
 	if(standby)
 	{
@@ -48,11 +51,16 @@ void reset_user(void)
 	shiftcaps = default_state;
 }
 
+//#ifndef NO_MATRIX
 void functions(void)
 {
+	// TODO read only the keys being pressed from the buffer instead of the extent of the buffer
 	for(uint8_t x = 0; x < COLUMNS; x++)
 	{
-		struct keystate keypress = currently_pressing[x];
+		// I'm replacing this with the ITT buffer but eventually this will be one single buffer including the USB buffer as well
+		// TODO issue #14
+		//struct keystate keypress = currently_pressing[x];
+		struct keystate keypress = {0, x, received[x]};
 		if(keypress.pressed)
 		{
 			////////////////////////////////////////////////////
@@ -126,7 +134,7 @@ void functions(void)
 			//play/pause button
 			if(keypress.row == play_pause.row
 			&& keypress.column == play_pause.column)
-			{play_pause_media();}
+			{usb_extra_press(PLAY_PAUSE); _delay_ms(70);}
 			#endif
 
 			#ifdef ENABLE_MUTE
@@ -140,6 +148,49 @@ void functions(void)
 			&& keypress.column == reset_key.column)
 			{reset = 1;}
 			#endif
+
+			#ifdef SKIP_BUTTON
+			if(keypress.row == skip_key.row
+			&& keypress.column == skip_key.column)
+			{usb_extra_press(SKIP); _delay_ms(70);}
+			#endif
+
+			#ifdef STOP_BUTTON
+			if(keypress.row == stop_key.row
+			&& keypress.column == stop_key.column)
+			{usb_extra_press(STOP); _delay_ms(70);}
+			#endif
+
+			#ifdef UNDO_BUTTON
+			if(keypress.row == undo_key.row
+			&& keypress.column == undo_key.column)
+			{usb_keyboard_press(KEY_Z, KEY_LEFT_CTRL); _delay_ms(70);}
+			#endif
+
+			#ifdef REDO_BUTTON
+			if(keypress.row == redo_key.row
+			&& keypress.column == redo_key.column)
+			{usb_keyboard_press(KEY_Y, KEY_LEFT_CTRL); _delay_ms(70);}
+			#endif
+
+			#ifdef COPY_BUTTON
+			if(keypress.row == copy_key.row
+			&& keypress.column == copy_key.column)
+			{usb_keyboard_press(KEY_C, KEY_LEFT_CTRL); _delay_ms(70);}
+			#endif
+
+			#ifdef CUT_BUTTON
+			if(keypress.row == cut_key.row
+			&& keypress.column == cut_key.column)
+			{usb_keyboard_press(KEY_X, KEY_LEFT_CTRL); _delay_ms(70);}
+			#endif
+
+			#ifdef PASTE_BUTTON
+			if(keypress.row == paste_key.row
+			&& keypress.column == paste_key.column)
+			{usb_keyboard_press(KEY_V, KEY_LEFT_CTRL); _delay_ms(70);}
+			#endif
 		}
 	}
 }
+//#endif

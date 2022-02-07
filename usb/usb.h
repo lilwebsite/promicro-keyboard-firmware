@@ -94,8 +94,9 @@ extern uint16_t consumer_key;
 #define CDC_SET_CONTROL_LINE_STATE	0x22
 
 //lookup table for the 8bit consumer keys
-const uint16_t consumer_lookup[7] = {
+const uint16_t consumer_lookup[8] = {
 	0x00CD,//PLAY_PAUSE	
+	0x00CE,//SKIP
 	0x00B7,//STOP		
 	0x00B6,//PREV_TRACK	
 	0x00B5,//NEXT_TRACK	
