@@ -23,11 +23,13 @@ DUMP=dump.hex
 #if MAKE_VARS not set the compiler will use defaults predefined in the code
 MAKE_VARS=1
 KEY_ROLLOVER=64
-KEYBOARD=IBMPingmaster
-DRIVER=SN74159N
-LAYOUT=bigwebsite
-# set to yes if you want to be able to print debug info using hid_listen
-DEBUG_PRINT=yes
+KEYBOARD=ITT
+DRIVER=ITT
+LAYOUT=lilwebsite
+# set to yes for no matrix for code that doesn't use it (protocol converters)
+NO_MATRIX=yes
+# set to yes if you want to be able to print debug info
+DEBUG_PRINT=no
 #don't change ENDPOINT_SIZE, PACKET_SIZE or REPORT_COUNT unless you know what you're doing!
 ENDPOINT_SIZE=64
 PACKET_SIZE=64
@@ -39,21 +41,24 @@ DEFINES=-DMAKEVARS -DF_CPU=$(FREQ) -DBAUD=$(BAUD) -DKEY_ROLLOVER=$(KEY_ROLLOVER)
 BIN=kbd
 CC=avr-gcc
 OBJCOPY=avr-objcopy
-LDFLAGS=-Wl,-Map=$(strip $@).map -Wl,--start-group -Wl,-lm -Wl,--end-group -Wl,--gc-sections,--print-gc-sections
+LDFLAGS=-Wl,--start-group -Wl,-lm -Wl,--end-group -Wl,--gc-sections,--print-gc-sections -Wl,--relax
+
+ifeq ($(NO_MATRIX), yes)
+DEFINES+= -DNO_MATRIX
+endif
 ifeq ($(DEBUG_PRINT), yes)
 DEFINES+= -DDEBUG_PRINT
 endif
 ifneq ($(DEBUG), yes)
 #CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections -ffunction-sections -mrelax
 #CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections
-CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Werror -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections
+CFLAGS=$(DEFINES) -mmcu=$(MCU) -O3 -Werror -Wstrict-prototypes -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fdata-sections -ffunction-sections
 else
 CFLAGS=$(DEFINES) -mmcu=$(MCU) -Og -Wall -Wstrict-prototypes -funsigned-char -funsigned-bitfields
 endif
 
 #source files
 SRC := usb/usb.c
-SRC += drivers/twi/twi.c
 SRC += $(wildcard keyboards/*/$(KEYBOARD)/keyboard.c)
 SRC += $(wildcard kbd/*.c)
 SRC += $(wildcard promicro/*.c)
@@ -70,10 +75,11 @@ $(BIN).eep: $(BIN).elf
 	$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O ihex $< $@
 
 $(BIN).elf: $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-Map=$(strip $@).map -o $@ $^
 
 %.o: %.c
-#	$(CC) -E $(CFLAGS) $(GENDEPFLAGS) -I ./ -I $(wildcard keyboards/*/$(KEYBOARD)/) -I $(wildcard layouts/$(KEYBOARD)/$(LAYOUT)) $< -o $@.precompile
+	$(CC) -E $(CFLAGS) $(GENDEPFLAGS) -I ./ -I $(wildcard keyboards/*/$(KEYBOARD)/) -I $(wildcard layouts/$(KEYBOARD)/$(LAYOUT)) $< -o $@.precompile
+	$(CC) -S -fverbose-asm $(CFLAGS) $(GENDEPFLAGS) -I ./ -I $(wildcard keyboards/*/$(KEYBOARD)/) -I $(wildcard layouts/$(KEYBOARD)/$(LAYOUT)) $< -o $@.asm
 	$(CC) -c $(CFLAGS) $(GENDEPFLAGS) -I ./ -I $(wildcard keyboards/*/$(KEYBOARD)/) -I $(wildcard layouts/$(KEYBOARD)/$(LAYOUT)) $< -o $@
 
 all: $(BIN).hex $(BIN).eep
@@ -84,7 +90,7 @@ fullclean:
 
 #clean without removing hex file
 clean:
-	rm -f $(BIN).elf $(OBJS) $(SRC:%.c=%.o.precompile) $(DUMP) $(FUSES) $(BIN).elf.map 
+	rm -f $(BIN).elf $(OBJS) $(SRC:%.c=%.o.asm) $(SRC:%.c=%.o.precompile) $(DUMP) $(FUSES) $(BIN).elf.map 
 
 ##################
 #helper functions#
