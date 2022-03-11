@@ -38,6 +38,7 @@ struct pin
 	const uint8_t position;
 };
 
+// TODO: potentially could combine keypress and keystate types into one type
 struct keypress {
 	uint8_t keycode;
 	uint8_t row;

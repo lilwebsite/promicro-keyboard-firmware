@@ -19,10 +19,10 @@ void kbd_press_release(uint8_t press, struct keypress keycode);
 uint8_t usb_keyboard_press(uint8_t key, uint8_t modifier);
 uint8_t usb_extra_press(uint8_t key);
 
-uint8_t prepare_send(const uint8_t endpoint);
+static uint8_t prepare_send(const uint8_t endpoint);
 uint8_t usb_keyboard_send(void);
 uint8_t usb_extra_consumer_send(void);
-uint8_t usb_extra_send(uint8_t report_id, uint16_t data);
+static uint8_t usb_extra_send(uint8_t report_id, uint16_t data);
 
 #ifdef DEBUG_PRINT
 void print(const char *s);
@@ -94,8 +94,9 @@ extern uint16_t consumer_key;
 #define CDC_SET_CONTROL_LINE_STATE	0x22
 
 //lookup table for the 8bit consumer keys
-const uint16_t consumer_lookup[7] = {
+const uint16_t consumer_lookup[8] = {
 	0x00CD,//PLAY_PAUSE	
+	0x00CE,//SKIP
 	0x00B7,//STOP		
 	0x00B6,//PREV_TRACK	
 	0x00B5,//NEXT_TRACK	

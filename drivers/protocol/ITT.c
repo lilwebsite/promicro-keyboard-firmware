@@ -5,8 +5,8 @@ void scan(void)
 {
 
 	clock_data ^= 0b1;
-	read_PINX_bit(4, F) ? (clock_data |= 0b10) : (clock_data &= 0xFD);
-	set_PINX_variable_output(7, F, (clock_data & 0b1));
+	read_PINX_bit(ITT_DATA.position, ITT_DATA.port) ? (clock_data |= 0b10) : (clock_data &= 0xFD); // record data line value
+	set_PINX_variable_output(ITT_C1.position, ITT_C1.port, (clock_data & 0b1)); // set clock value
 
 	switch(clock_data & 0b101)
 	{
@@ -67,7 +67,10 @@ void scan(void)
 			if(counter == 0)
 			{
 				if(last_pressed_count != pressed_counter || !pressed_counter)
-				{kbsend();}
+				{
+					//overrides();
+					kbsend();
+				}
 				last_pressed_count = pressed_counter;
 				pressed_counter = 0;
 				clock_data &= 0x3F;
@@ -107,10 +110,15 @@ void scan(void)
 	{
 		// I am using the function call overhead as a delay here
 		// gives it just the right amount of time
-		set_PINX_variable_output(6, F, 1);
-		set_PINX_variable_output(7, F, 1);
-		set_PINX_variable_output(7, F, 0);
-		set_PINX_variable_output(6, F, 0);
+		//set_PINX_variable_output(6, F, 1);
+		//set_PINX_variable_output(7, F, 1);
+		//set_PINX_variable_output(7, F, 0);
+		//set_PINX_variable_output(6, F, 0);
+		set_PINX_variable_output(ITT_SOLENOID.position, ITT_SOLENOID.port, 1);
+		set_PINX_variable_output(ITT_C1.position, ITT_C1.port, 1);
+		set_PINX_variable_output(ITT_C1.position, ITT_C1.port, 0);
+		set_PINX_variable_output(ITT_SOLENOID.position, ITT_SOLENOID.port, 0);
+
 		solenoid = 0b101;
 	}
 	#endif

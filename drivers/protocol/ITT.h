@@ -1,7 +1,12 @@
 #include <kbd/globals.h>
 #include <usb/usb.h>
 
-static volatile uint8_t received[100];
+extern const struct pin ITT_C1;
+extern const struct pin ITT_C2;
+extern const struct pin ITT_DATA;
+extern const struct pin ITT_SOLENOID;
+
+uint8_t received[130];
 static uint8_t counter;
 static uint8_t last_pressed_count;
 static uint8_t pressed_counter;
