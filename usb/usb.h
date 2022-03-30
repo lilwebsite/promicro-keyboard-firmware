@@ -19,10 +19,10 @@ void kbd_press_release(uint8_t press, struct keypress keycode);
 uint8_t usb_keyboard_press(uint8_t key, uint8_t modifier);
 uint8_t usb_extra_press(uint8_t key);
 
-static uint8_t prepare_send(const uint8_t endpoint);
+uint8_t prepare_send(const uint8_t endpoint);
 uint8_t usb_keyboard_send(void);
 uint8_t usb_extra_consumer_send(void);
-static uint8_t usb_extra_send(uint8_t report_id, uint16_t data);
+uint8_t usb_extra_send(uint8_t report_id, uint16_t data);
 
 #ifdef DEBUG_PRINT
 void print(const char *s);

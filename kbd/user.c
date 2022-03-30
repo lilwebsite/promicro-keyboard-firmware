@@ -155,6 +155,12 @@ void functions(void)
 			{usb_extra_press(SKIP); _delay_ms(70);}
 			#endif
 
+			#ifdef STOP_BUTTON
+			if(keypress.row == stop_key.row
+			&& keypress.column == stop_key.column)
+			{usb_extra_press(STOP); _delay_ms(70);}
+			#endif
+
 			#ifdef UNDO_BUTTON
 			if(keypress.row == undo_key.row
 			&& keypress.column == undo_key.column)

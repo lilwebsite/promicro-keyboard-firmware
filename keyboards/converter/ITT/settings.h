@@ -2,11 +2,11 @@
 #define ITT_NUMPAD 0
 
 // this is the switch to disable solenoid, references the position in the layout array 
-#define SOLENOID_DISABLE 99
+#define SOLENOID_DISABLE 51
 
 // set NO_SOLENOID to 1 if it should be disabled completely
 #undef NO_SOLENOID
-#define NO_SOLENOID 0
+#define NO_SOLENOID 1
 
 #define COLUMNS 130
 #define KEYS 114
@@ -23,4 +23,4 @@
 #define PASTE_BUTTON
 #define ENABLE_TRACK_KEYS
 #define ENABLE_PLAY_PAUSE
-#define SKIP_BUTTON
+#define STOP_BUTTON

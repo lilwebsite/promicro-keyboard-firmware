@@ -18,7 +18,7 @@ int main(void)
 		#endif
 
 		scan();
-		overrides();
+		//overrides();
 		//#ifdef ENABLE_LAYERS
 		//if any of the layer keys were pressed this applies them to the variable `layer`
 		//#endif

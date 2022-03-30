@@ -13,7 +13,7 @@ void scan(void)
 		// if clock is still high and clock was already read or clock is low
 		case 0b0:
 		case 0b101:
-			_delay_us(20);
+			_delay_us(5);
 			return;
 		// if clock is waiting to be low and is low: reset the clock and data read bit
 		case 0b100:
@@ -68,7 +68,7 @@ void scan(void)
 			{
 				if(last_pressed_count != pressed_counter || !pressed_counter)
 				{
-					//overrides();
+					overrides();
 					kbsend();
 				}
 				last_pressed_count = pressed_counter;
@@ -90,7 +90,9 @@ void scan(void)
 
 	if(received[SOLENOID_DISABLE])
 	{
-		solenoid_toggle();
+		//solenoid_toggle();
+		solenoid &= 0b1;
+		solenoid ^= 0b1;
 	}
 
 	for(; counter < COLUMNS; counter++)
