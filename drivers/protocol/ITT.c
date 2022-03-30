@@ -12,6 +12,16 @@ void scan(void)
 	{
 		// if clock is still high and clock was already read or clock is low
 		case 0b0:
+			if(counter == 0)
+			{
+				if(last_pressed_count != pressed_counter || !pressed_counter)
+				{
+					overrides();
+					kbsend();
+				}
+				last_pressed_count = pressed_counter;
+				pressed_counter = 0;
+			}
 		case 0b101:
 			_delay_us(5);
 			return;
@@ -66,13 +76,6 @@ void scan(void)
 			}
 			if(counter == 0)
 			{
-				if(last_pressed_count != pressed_counter || !pressed_counter)
-				{
-					overrides();
-					kbsend();
-				}
-				last_pressed_count = pressed_counter;
-				pressed_counter = 0;
 				clock_data &= 0x3F;
 			}
 		case 0b010001:
