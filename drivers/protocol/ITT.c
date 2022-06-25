@@ -14,11 +14,8 @@ void scan(void)
 		case 0b0:
 			if(counter == 0)
 			{
-				if(last_pressed_count != pressed_counter || !pressed_counter)
-				{
-					overrides();
-					kbsend();
-				}
+				overrides();
+				kbsend();
 				last_pressed_count = pressed_counter;
 				pressed_counter = 0;
 			}
@@ -91,13 +88,6 @@ void scan(void)
 
 	reset_sending();
 
-	if(received[SOLENOID_DISABLE])
-	{
-		//solenoid_toggle();
-		solenoid &= 0b1;
-		solenoid ^= 0b1;
-	}
-
 	for(; counter < COLUMNS; counter++)
 	{
 		struct keypress target = {keymap[counter], counter, counter};
@@ -106,19 +96,22 @@ void scan(void)
 	counter = 0;
 	
 	#if NO_SOLENOID==0
+	if(received[SOLENOID_DISABLE])
+	{
+		solenoid ^= 0b1;
+		solenoid |= 0b100;
+		_delay_ms(50); // debounce
+	}
+
 	// if a keypress was detected
 	if((clock_data & 0x40) == 0x40)
-	{solenoid = 0b11;}
+	{solenoid = (solenoid & 0b1) | 0b10;}
 
 	if((solenoid & 0b111) == 0b11
-	&& pressed_counter >= (last_pressed_count + 1))
+	&& pressed_counter > last_pressed_count)
 	{
 		// I am using the function call overhead as a delay here
 		// gives it just the right amount of time
-		//set_PINX_variable_output(6, F, 1);
-		//set_PINX_variable_output(7, F, 1);
-		//set_PINX_variable_output(7, F, 0);
-		//set_PINX_variable_output(6, F, 0);
 		set_PINX_variable_output(ITT_SOLENOID.position, ITT_SOLENOID.port, 1);
 		set_PINX_variable_output(ITT_C1.position, ITT_C1.port, 1);
 		set_PINX_variable_output(ITT_C1.position, ITT_C1.port, 0);
