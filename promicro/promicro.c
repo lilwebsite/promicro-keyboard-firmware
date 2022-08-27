@@ -1,6 +1,7 @@
 #include <kbd/globals.h>
 #include "promicro.h"
 
+#ifdef DRIVER_ROWS
 uint8_t init_inputs(const struct pin *input_pins)
 {
 	uint8_t pullup = 1;
@@ -12,6 +13,7 @@ uint8_t init_inputs(const struct pin *input_pins)
 
 	return 1;
 }
+#endif
 
 uint8_t init_promicro(void)
 {

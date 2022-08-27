@@ -23,8 +23,8 @@ DUMP=dump.hex
 #if MAKE_VARS not set the compiler will use defaults predefined in the code
 MAKE_VARS=1
 KEY_ROLLOVER=64
-KEYBOARD=ITT
-DRIVER=ITT
+KEYBOARD=39-LI-0101
+DRIVER=39-LI-0101
 LAYOUT=lilwebsite
 # set to yes for no matrix for code that doesn't use it (protocol converters)
 NO_MATRIX=yes
@@ -35,7 +35,10 @@ ENDPOINT_SIZE=64
 PACKET_SIZE=64
 REPORT_COUNT=62
 
-DEFINES=-DMAKEVARS -DF_CPU=$(FREQ) -DBAUD=$(BAUD) -DKEY_ROLLOVER=$(KEY_ROLLOVER) -DENDPOINT_SIZE=$(ENDPOINT_SIZE) -DPACKET_SIZE=$(PACKET_SIZE) -DREPORT_COUNT=$(REPORT_COUNT)
+# this imports the target TWI chip
+TWI_TARGET=MCP23018
+
+DEFINES=-DMAKEVARS -DF_CPU=$(FREQ) -DBAUD=$(BAUD) -DKEY_ROLLOVER=$(KEY_ROLLOVER) -DENDPOINT_SIZE=$(ENDPOINT_SIZE) -DPACKET_SIZE=$(PACKET_SIZE) -DREPORT_COUNT=$(REPORT_COUNT) -D$(TWI_TARGET)
 
 #compiler definitions
 BIN=kbd
@@ -59,6 +62,7 @@ endif
 
 #source files
 SRC := usb/usb.c
+SRC += drivers/twi/twi.c
 SRC += $(wildcard keyboards/*/$(KEYBOARD)/keyboard.c)
 SRC += $(wildcard kbd/*.c)
 SRC += $(wildcard promicro/*.c)
@@ -78,9 +82,9 @@ $(BIN).elf: $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-Map=$(strip $@).map -o $@ $^
 
 %.o: %.c
-	$(CC) -E $(CFLAGS) $(GENDEPFLAGS) -I ./ -I $(wildcard keyboards/*/$(KEYBOARD)/) -I $(wildcard layouts/$(KEYBOARD)/$(LAYOUT)) $< -o $@.precompile
-	$(CC) -S -fverbose-asm $(CFLAGS) $(GENDEPFLAGS) -I ./ -I $(wildcard keyboards/*/$(KEYBOARD)/) -I $(wildcard layouts/$(KEYBOARD)/$(LAYOUT)) $< -o $@.asm
-	$(CC) -c $(CFLAGS) $(GENDEPFLAGS) -I ./ -I $(wildcard keyboards/*/$(KEYBOARD)/) -I $(wildcard layouts/$(KEYBOARD)/$(LAYOUT)) $< -o $@
+	$(CC) -E $(CFLAGS) $(GENDEPFLAGS) -I ./ -I $(wildcard keyboards/*/$(KEYBOARD)/) -I $(wildcard layouts/$(KEYBOARD)/$(LAYOUT)) -I drivers/twi/$(TWI_TARGET).h $< -o $@.precompile
+	$(CC) -S -fverbose-asm $(CFLAGS) $(GENDEPFLAGS) -I ./ -I $(wildcard keyboards/*/$(KEYBOARD)/) -I $(wildcard layouts/$(KEYBOARD)/$(LAYOUT)) -I drivers/twi/$(TWI_TARGET).h $< -o $@.asm
+	$(CC) -c $(CFLAGS) $(GENDEPFLAGS) -I ./ -I $(wildcard keyboards/*/$(KEYBOARD)/) -I $(wildcard layouts/$(KEYBOARD)/$(LAYOUT)) -I drivers/twi/$(TWI_TARGET).h $< -o $@
 
 all: $(BIN).hex $(BIN).eep
 
