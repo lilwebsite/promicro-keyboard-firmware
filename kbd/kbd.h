@@ -15,7 +15,7 @@ extern void set(uint8_t row);
 extern void scan(void);
 extern void reset_keys(void);
 extern void press_release(void);
-extern const struct pin input_pins[COLUMNS];
+//extern const struct pin input_pins[];
 extern volatile struct kbstate kbd;
 
 #define ENABLE_LAYERS

@@ -55,7 +55,7 @@ void reset_user(void)
 void functions(void)
 {
 	// TODO read only the keys being pressed from the buffer instead of the extent of the buffer
-	for(uint8_t x = 0; x < COLUMNS; x++)
+	for(uint8_t x = 0; x < KEYS; x++)
 	{
 		// I'm replacing this with the ITT buffer but eventually this will be one single buffer including the USB buffer as well
 		// TODO issue #14

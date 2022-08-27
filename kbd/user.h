@@ -1,12 +1,12 @@
 #include "../usb/usb.h"
 
-extern struct keystate currently_pressing[COLUMNS];
+extern struct keystate currently_pressing[KEYS];
 extern const struct kblayer_key *layer;
 extern struct keystate default_state;
 
 uint8_t overrides(void);
 void functions(void);
-extern uint8_t received[COLUMNS];
+extern uint8_t received[KEYS];
 
 #ifdef STANDBY
 extern const struct keystate standby_sw;

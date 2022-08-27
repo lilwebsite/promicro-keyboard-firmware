@@ -47,12 +47,5 @@ struct keypress {
 
 const inline uint8_t keypress_compare(struct keypress kp1, struct keypress kp2)
 {return (kp1.row == kp2.row) && (kp1.column == kp2.column);}
-
-struct twi_target {
-	uint8_t slave;
-	uint8_t addr;
-	uint8_t rw;
-	uint8_t data;
-};
 #define __TYPES
 #endif
