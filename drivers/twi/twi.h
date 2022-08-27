@@ -6,7 +6,6 @@
 uint8_t twi_status = twi_unset;
 uint8_t twi_failed = 0;
 
-#define twi_buffer_limit 10 // arbitrary limit
 uint8_t twi_buffer_index = 0;
 uint8_t twi_buffer[twi_buffer_limit];
 
@@ -19,4 +18,5 @@ void twi_send(uint8_t message); // send data
 uint8_t twi_read(void); // read operation
 void twi_start_condition(void);
 void twi_stop_condition(void);
+uint8_t twi_action(struct twi_target *action);
 #endif

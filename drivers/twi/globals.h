@@ -1,3 +1,9 @@
+#include "devices/MCP23018.h"
+
+#define WRITE 1
+#define READ 0
+#define twi_buffer_limit 10 // arbitrary limit
+
 // status codes
 #define twi_unset 0xFF
 #define master_start 0x08
@@ -14,5 +20,5 @@
 #define twi_no_relevant_state_info 0xF8
 #define twi_illegal_condition 0x00
 
-// controller addresses
-#define MCP23018_ADDR 0b01000000
+// twi_target builder
+#define SET_TARGET(ADDR, RW) {TARGET_SLAVE, ADDR, RW, 0x0}

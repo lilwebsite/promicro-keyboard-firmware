@@ -24,7 +24,8 @@ uint8_t twi_check_status(uint8_t expected)
 
 void twi_init()
 {
-	TWBR = 0x0F;
+	TWBR = 0x02;
+	TWSR = 0x00;
 	set_PORTX_bit(1, D, 1);
 	set_DDRX_bit(1, D, 1);
 	set_PORTX_bit(0, D, 1);
@@ -123,4 +124,13 @@ void twi_stop_condition(void)
 	TWCR =  (1 << TWINT) |
 			(1 << TWSTO) |
 			(1 << TWEN);
+}
+
+uint8_t twi_action(struct twi_target *action)
+{
+	twi_set_slave(action->slave);
+	twi_append_data(action->addr);
+	if(action->rw)
+	{twi_append_data(action->data);}
+	return twi_commit(action->rw);
 }
