@@ -1,23 +1,11 @@
 #include "globals.h"
 #include "user.h"
-#include "../promicro/promicro.h"
-#include "../usb/usb.h"
 
-extern uint8_t reset;
+uint8_t device_reset;
 
-extern void functions(void);
+struct kbstate kbd = {0, 0, 0, 0};
 
-extern uint8_t init_promicro(void);
 extern void usb_init(void);
-extern uint8_t usb_configured(void);
 extern void init(void);
-extern void set(uint8_t row);
-extern void scan(void);
-extern void reset_keys(void);
-extern void press_release(void);
-//extern const struct pin input_pins[];
-extern volatile struct kbstate kbd;
-
-#define ENABLE_LAYERS
 
 int main(void);

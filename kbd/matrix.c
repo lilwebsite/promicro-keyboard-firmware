@@ -1,5 +1,5 @@
 #ifndef NO_MATRIX
-#include "matrix.h"
+#include <kbd/matrix.h>
 #include <layout.h>
 
 uint8_t get_layer_key(uint8_t layer_num, uint8_t row, uint8_t column)
@@ -122,11 +122,11 @@ void press_release(void)
 	return;
 }
 
-void setup_keys(void)
+void read_row(void)
 {
 	for(uint8_t x = 0; x < COLUMNS; x++)
 	{
-		previous_presses[row][x] = currently_pressing[x].pressed;//save the last state before assigning a new one
+		previous_presses[row][x] = currently_pressing[x].pressed; // save the last state before assigning a new one
 		currently_pressing[x] = (struct keystate){row, x, 0};
 		if(!ispressed[x])
 		{currently_pressing[x].pressed = 1;}
@@ -150,8 +150,6 @@ void reset_keys(void)
 	{
 		currently_pressing[x] = default_state;
 	}
-
-	reset_user();
 
 	return;
 }
