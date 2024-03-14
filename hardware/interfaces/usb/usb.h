@@ -9,8 +9,6 @@
 #include <interfaces/usb/types.h>
 #include <interfaces/usb/globals.h>
 
-#ifndef __USB
-#define __USB
 // save some memory by re-using some sizes
 #define DD_LENGTH 0x12
 #define DC_LENGTH 0x09
@@ -30,7 +28,6 @@
 #define SEND16(data) \
 	UEDATX = (uint8_t)(data & 0xFF); \
 	UEDATX = (uint8_t)((data >> 8) & 0xFF);
-
 
 // USB standard device requests
 //
@@ -95,11 +92,7 @@ static uint8_t usb_configuration = 0; // used by SET_CONFIGURATION and GET_CONFI
 static uint8_t sent_reports = 0; // before sending data check we sent all report descriptors
 static uint8_t delay_startup = 0;
 static uint8_t device_protocol = 1; // used by SET_PROTOCOL and GET_PROTOCOL
-//static uint16_t keyboard_idle_duration = 125; // used by SET_IDLE and GET_IDLE, 125 is default for keyboards and this value only affects keyboards
-//static uint8_t keyboard_idle_duration = 0;
-//static uint8_t other_idle_duration = 0; // used by SET_IDLE and GET_IDLE, infinite (0) is standard for mouse and joystick (as well as other devices)
 static uint8_t endpoints_ready = 0; // is set to 1 before any endpoint usage (except EP0)
-//static uint8_t wTotalLength[2] = {0, 0}; // used by the configuration descriptor
 static uint16_t wTotalLength = 0; // used by the configuration descriptor
 
 // Now some variables must be defined to give persistent storage for keys
@@ -197,7 +190,6 @@ struct action_state action_ep_state = {0, 0, 0, 0, 0, 0};
 void usb_init(void);
 const struct hid_descriptor *get_hid_descriptor(uint8_t endpoint);
 void get_descriptor(struct setup_packet *data0);
-//uint8_t send_descriptor(struct setup_packet *data0, uint8_t type, const uint8_t *descriptor, uint16_t descriptor_length, uint8_t offset, uint8_t buffer_start);
 void send_descriptor(struct setup_packet *data0, struct descriptor_stream *stream);
 void usb_wait_frames(uint16_t frames);
 void send_report(uint8_t interface);
@@ -213,9 +205,7 @@ void kbd_press_release(uint8_t press, struct keypress key);
 void kbd_consumer_press(uint16_t keycode);
 void kbd_single_press(uint8_t keycode, uint8_t modifier);
 void reset_sending(void);
-#endif
 
-//extern void leddebug(uint8_t val, uint8_t override);
 extern uint8_t device_reset;
 extern struct debugging usb_debug;
 extern void usb_debug_write(uint8_t data);

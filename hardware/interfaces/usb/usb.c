@@ -22,7 +22,6 @@ ISR(USB_GEN_vect)
 		UECFG1X = 1 << EPSIZE1 | 1 << EPSIZE0 | 1 << ALLOC; // (ALLOC 0b10) allocates the endpoint (by default endpoint is 8 bytes in size, single bank)
 		configuration_ok &= (UESTA0X & (1 << CFGOK)) >> CFGOK; // check that the above settings are sane
 
-		//UEIENX = 1 << RXSTPE | 1 << RXOUTE | 1 << STALLEDE;
 		UEIENX = 1 << RXSTPE | 1 << STALLEDE;
 
 		usb_configuration = 0;
@@ -93,14 +92,12 @@ ISR(USB_COM_vect)
 			data0.wLength[0] = UEDATX;
 			data0.wLength[1] = UEDATX;
 
-			//HANDSHAKE(RXSTPI); // respond that we got the info
 			UEINTX = ~((1 << RXSTPI) | (1 << RXOUTI) | (1 << TXINI));
 
 			usb_setup(&data0);
 
 			if (UEINTX & (1 << TXINI))
 			{HANDSHAKE(TXINI);}
-			//CLEAR_FIFOCON();
 
 			continue;
 		}
@@ -109,60 +106,15 @@ ISR(USB_COM_vect)
 		// process IN packets here, packets sent to the host
 		if (UEINTX & (1 << TXINI))
 		{
-			//if (e == 4 && action_ep_state.mode == 1)
-			//{
-			//	//UENUM = 4;
-
-			//	//WAIT(TXINI);
-
-			//	leddebug(0xFF, 1);
-
-			//	//for (uint8_t d = 0; d < 8; d++)
-			//	//{UEDATX = 0;}
-
-			//	//HANDSHAKE(TXINI);
-			//	//CLEAR_FIFOCON();
-
-			//	//UENUM = e;
-//			//	return;
-			//}
-
 			// Some endpoints (the HID ones) are constantly being polled by the
 			// the host to see if there are any waiting interrupts. We need to
 			// exclude them here as we don't want to send any interrupts until
 			// we have data ready in a buffer.
 			//const struct hid_descriptor *hid = get_hid_descriptor(e);
 
-			//// we handshake FIFOCON directly here as RWAL may not unset by hardware
-			//if (hid != 0)
-			//{
-			//	if (hid->hid == 0)
-			//	{
-			//		HANDSHAKE(TXINI);
-			//		HANDSHAKE(FIFOCON);
-			//	}
-			//}
-
 			if (action_ep_state.reply_ep != 0)
 			{
 				HANDSHAKE(TXINI);
-				//if (pgm_read_byte(&(action_ep_state.reply_ep[0])) == e)
-				//{
-				//	if (usb_debug.length)
-				//	{
-				//		WAIT(TXINI);
-				//		//for (uint8_t b = 0; b < usb_debug.length; b++)
-				//		//{UEDATX = usb_debug.buffer[b];}
-				//		//UEDATX = usb_debug.buffer[0];
-				//		UEDATX = 0xFF;
-				//		usb_debug.length = 0;
-				//		HANDSHAKE(TXINI);
-				//		CLEAR_FIFOCON();
-				//		continue;
-				//	}
-
-				//	//out_ep_reply(action_ep_state.reply_ep);
-				//}
 
 				STALL();
 
@@ -263,17 +215,14 @@ void usb_init(void)
 	configuration_ok = 1;
 
 	// setup some variables that must be calculated in runtime
-	//*(uint16_t *)wTotalLength = DC_LENGTH + (ID_LENGTH * INTERFACE_COUNT);
 	wTotalLength = DC_LENGTH + (ID_LENGTH * INTERFACE_COUNT);
 
 	for (uint8_t i = 0; i < INTERFACE_COUNT; i++)
 	{
 		for (uint8_t e = 0; e < usb_interfaces[i].hid_count; e++)
 		{
-			//*(uint16_t *)wTotalLength += ED_LENGTH;
 			wTotalLength += ED_LENGTH;
 			if (usb_interfaces[i].hid[e].hid != 0)
-			//{*(uint16_t *)wTotalLength += HID_LENGTH;}
 			{wTotalLength += HID_LENGTH;}
 		}
 	}
@@ -283,7 +232,6 @@ void usb_init(void)
 // returns the struct which contains hid, report, and endpoint descriptors
 const struct hid_descriptor *get_hid_descriptor(uint8_t endpoint)
 {
-	//const struct hid_descriptor *hid = 0;
 	for (uint8_t i = 0; i < descriptors.interface_count; i++)
 	{
 		const struct usb_interface *interface = &descriptors.interface[i];
@@ -384,8 +332,6 @@ void out_ep_reply(const uint8_t *endpoint)
 	uint8_t out_ep = UENUM;
 	uint8_t reply_ep = pgm_read_byte(&(endpoint[0])) & 0xF;
 
-	//leddebug(0xF0, 1);
-
 	if (
 		action_ep_state.mode == 0xFF &&
 		action_ep_state.action == 0xFF &&
@@ -406,8 +352,6 @@ void out_ep_reply(const uint8_t *endpoint)
 			CLEAR_FIFOCON();
 		}
 	}
-
-	//leddebug(0xF2, 1);
 
 	UENUM = out_ep;
 }
@@ -548,151 +492,6 @@ void send_descriptor(struct setup_packet *data0, struct descriptor_stream *strea
 	}
 }
 
-// this is paired with get_descriptor and is the data transfer stage
-//uint8_t send_descriptor(struct setup_packet *data0, uint8_t type, const uint8_t *descriptor, uint16_t descriptor_length, uint8_t offset, uint8_t buffer_start)
-//{
-//	uint8_t index = data0->wIndex[0];
-//	uint16_t length = *((uint16_t *)(data0->wLength));
-//	uint16_t true_length = descriptor_length;
-//
-//	uint8_t len = (length < 256) ? length : 255;
-//	if (len > descriptor_length) {len = descriptor_length;}
-//	if (len < descriptor_length) {descriptor_length = len;}
-//
-//	uint8_t n = 0;
-//	uint8_t i = 0;
-//	uint8_t d = 0;
-//
-//	do {
-//		do {i = UEINTX;} while (! (i & (1 << TXINI | 1 << RXOUTI)));
-//		if (i & (1 << RXOUTI)) {return 0xFF;}
-//
-//		n = len < EP0_SIZE ? len : EP0_SIZE;
-//
-//		if (len == descriptor_length && buffer_start != 0)
-//		{n = EP0_SIZE - buffer_start;}
-//
-//		// ignore wLength if device descriptor
-//		//if (type == TYPE_DEVICE)
-//		//{n = descriptor_length;}
-//
-//		if (type == TYPE_DEVICE)
-//		{
-//			if (length == 64)
-//			{n = descriptor_length;}
-//			if (length == 8)
-//			{
-//				n = 8;
-//				descriptor_length = 8;
-//				len = 8;
-//			}
-//		}
-//
-//		for (i = n; i; i--)
-//		{
-//			uint8_t c = (descriptor_length - len) + (n - i);
-//			// every descriptor has a bLength and bDescriptorType except report descriptors
-//			switch (c)
-//			{
-//				// bLength
-//				case 0:
-//					if (type == TYPE_REPORT)
-//					{break;}
-//					UEDATX = true_length;
-//					continue;
-//
-//				// bDescriptorType
-//				case 1:
-//					if (type == TYPE_REPORT)
-//					{break;} 
-//					UEDATX = type;
-//					continue;
-//			}
-//
-//			if (type == TYPE_CONFIGURATION)
-//			{
-//				switch(c)
-//				{
-//					// wTotalLength
-//					//case 2:
-//					//case 3:
-//					//	UEDATX = wTotalLength[c - 2];
-//					//	continue;
-//					case 2:
-//						SEND16(wTotalLength);
-//					case 3:
-//						continue;
-//
-//					// bNumInterfaces
-//					case 4:
-//						UEDATX = descriptors.interface_count;
-//						continue;
-//				}
-//			}
-//
-//			if (type == TYPE_HID)
-//			{
-//				switch(c)
-//				{
-//					// wDescriptorLength
-//					case 7:
-//						SEND16(pgm_read_word(&(descriptor[5])));
-//					case 8:
-//						continue;
-//				}
-//			}
-//
-//			if (type == TYPE_INTERFACE)
-//			{
-//				switch(c)
-//				{
-//					// bInterfaceNumber
-//					case 2:
-//						UEDATX = index;
-//						break;
-//
-//					// bNumEndpoints
-//					case 4:
-//						UEDATX = descriptors.interface[index].hid_count;
-//						break;
-//
-//					// bInterfaceClass
-//					case 5:
-//						UEDATX = 0x03;
-//						break;
-//
-//					// iInterface
-//					case 8:
-//						UEDATX = 0x01;
-//						break;
-//
-//					// for unused variables
-//					default:
-//						UEDATX = 0;
-//				}
-//
-//				continue;
-//			}
-//
-//			// anything else (stored in the descriptor arrays)
-//			UEDATX = pgm_read_byte(&(descriptor[c - offset]));
-//		}
-//
-//		len -= n;
-//
-//		//if (length == *((uint16_t *)(wTotalLength)) && n != EP0_SIZE)
-//		//{return n;}
-//		//if (n == 0)
-//		//{break;}
-//		if (! len && n != EP0_SIZE)
-//		{break;}
-//
-//		HANDSHAKE(TXINI);
-//	} while (len || n == EP0_SIZE);
-//
-//	return n;
-//}
-
 // return descriptor information to the host, depending on descriptor type
 void get_descriptor(struct setup_packet *data0)
 {
@@ -701,9 +500,6 @@ void get_descriptor(struct setup_packet *data0)
 	uint16_t length = *((uint16_t *)(data0->wLength));
 
 	const uint8_t no_descriptor = 0;
-	//const uint8_t *descriptor = &no_descriptor;
-	//uint16_t descriptor_length = 0;
-	//uint8_t offset = 2;
 
 	// below is a struct that keeps track of which descriptor we are on as well as
 	// the current buffer index of the register, the offset (which skips descriptor
@@ -732,8 +528,6 @@ void get_descriptor(struct setup_packet *data0)
 		case TYPE_DEVICE:
 			if (index == 0)
 			{
-				//descriptor = descriptors.device;
-				//descriptor_length = DD_LENGTH;
 				stream.descriptor = descriptors.device;
 				stream.length = DD_LENGTH;
 			}
@@ -742,12 +536,9 @@ void get_descriptor(struct setup_packet *data0)
 		case TYPE_CONFIGURATION:
 			if (index == 0)
 			{
-				//descriptor = descriptors.configuration;
-				//descriptor_length = DC_LENGTH;
 				stream.descriptor = descriptors.configuration;
 				stream.length = DC_LENGTH;
 			}
-			//offset = 5;
 			stream.offset = 5;
 			break;
 
@@ -759,17 +550,11 @@ void get_descriptor(struct setup_packet *data0)
 				UEDATX = TYPE_STRING;
 				SEND16(LANGID);
 
-				//UEDATX = 2;
-				//UEDATX = TYPE_STRING;
-
 				HANDSHAKE(TXINI);
-				//CLEAR_FIFOCON();
 				return;
 			}
 			else if (index <= STRING_COUNT)
 			{
-				//descriptor = (const uint8_t *)vendor_strings[index - 1].string;
-				//descriptor_length = vendor_strings[index - 1].length;
 				stream.descriptor = (const uint8_t *)vendor_strings[index - 1].string;
 				stream.length = vendor_strings[index - 1].length;
 			}
@@ -781,12 +566,6 @@ void get_descriptor(struct setup_packet *data0)
 		case TYPE_ENDPOINT:
 		case TYPE_HID:
 		case TYPE_REPORT:
-			//endpoints = 0; // number of endpoints available
-			//for (uint8_t i = 0; i < descriptors.interface_count; i++)
-			//{endpoints += descriptors.interface[i].hid_count;}
-
-			//uint8_t endpoint = 0; // the current endpoint we are on
-
 			// iterate through the interfaces, and return the one requested
 			for (uint8_t i = 0; i < descriptors.interface_count; i++)
 			{
@@ -802,15 +581,11 @@ void get_descriptor(struct setup_packet *data0)
 					switch(type)
 					{
 						case TYPE_ENDPOINT:
-							//descriptor = hid->endpoint;
-							//descriptor_length = ED_LENGTH;
 							stream.descriptor = hid->endpoint;
 							stream.length = ED_LENGTH;
 							break;
 
 						case TYPE_HID:
-							//descriptor = hid->hid;
-							//descriptor_length = HID_LENGTH;
 							stream.descriptor = hid->hid;
 							stream.length = HID_LENGTH;
 							break;
@@ -819,21 +594,15 @@ void get_descriptor(struct setup_packet *data0)
 							// report is the only exception to the offset variable
 							stream.offset = 0;
 							stream.descriptor = hid->report;
-							//offset = 0;
-							//descriptor = hid->report;
 							// Report length is stored in the HID descriptor
 							// as wDescriptorLength.
 							// Takes into account HID_LENGTH - 2
-							//
-							//descriptor_length = pgm_read_byte(&(hid->hid[5]));
 							stream.length = pgm_read_word(&(hid->hid[5]));
 
 					}
 
 					break;
 				}
-
-				//endpoint += interface->hid_count;
 			}
 			break;
 
@@ -848,7 +617,6 @@ void get_descriptor(struct setup_packet *data0)
 	}
 
 	// no descriptor selected means something went wrong
-	//if (descriptor == &no_descriptor)
 	if (stream.descriptor == &no_descriptor)
 	{
 		STALL();
@@ -856,14 +624,10 @@ void get_descriptor(struct setup_packet *data0)
 	}
 
 	// spaghetti code
-	//if (type == TYPE_CONFIGURATION && length == *((uint16_t *)(wTotalLength)))
 	if (stream.type == TYPE_CONFIGURATION && stream.length == wTotalLength)
 	{
 		uint8_t buffer_start = 0;
-		//WAIT(TXINI);
-		//buffer_start = send_descriptor(data0, type, descriptor, descriptor_length, offset, buffer_start);
 		send_descriptor(data0, &stream);
-		//offset = 2;
 		stream.offset = 2;
 		for (uint8_t i = 0; i < descriptors.interface_count; i++)
 		{
@@ -873,7 +637,6 @@ void get_descriptor(struct setup_packet *data0)
 			uint8_t index = data0->wIndex[0];
 			// set the wIndex to what interface we are sending the host
 			data0->wIndex[0] = i;
-			//buffer_start = send_descriptor(data0, TYPE_INTERFACE, descriptor, ID_LENGTH, offset, buffer_start);
 			// update stream.type and stream.length
 			// for type interface, stream.descriptor is ignored
 			stream.type = TYPE_INTERFACE;
@@ -887,7 +650,6 @@ void get_descriptor(struct setup_packet *data0)
 				const struct hid_descriptor *hid = &interface->hid[e];
 				// this skips the HID descriptor if it does not exist
 				if (hid->hid != 0)
-				//{buffer_start = send_descriptor(data0, TYPE_HID, hid->hid, HID_LENGTH, offset, buffer_start);}
 				{
 					stream.type = TYPE_HID;
 					stream.length = HID_LENGTH;
@@ -898,29 +660,17 @@ void get_descriptor(struct setup_packet *data0)
 				stream.type = TYPE_ENDPOINT;
 				stream.length = ED_LENGTH;
 				stream.descriptor = hid->endpoint;
-				//buffer_start = send_descriptor(data0, TYPE_ENDPOINT, hid->endpoint, ED_LENGTH, offset, buffer_start);
 				send_descriptor(data0, &stream);
 			}
 		}
-		//HANDSHAKE(TXINI);
-		//CLEAR_FIFOCON();
 	}
 	else
 	{
-		//WAIT(TXINI);
-		//if (send_descriptor(data0, type, descriptor, descriptor_length, offset, 0) == 0xFF)
-		//{return;}
-
 		// if host is only querying one descriptor and wLength value exceeds descriptor length clamp it to descriptor length
-		//if (length > descriptor_length)
-		//{*((uint16_t *)(data0->wLength)) = descriptor_length;}
-
-		//send_descriptor(data0, type, descriptor, descriptor_length, offset, 0);
 		send_descriptor(data0, &stream);
 	}
 
 	HANDSHAKE(TXINI);
-	//HANDSHAKE(FIFOCON);
 }
 
 // enables all defined endpoints
@@ -985,8 +735,7 @@ uint8_t activate_endpoints(void)
 	return endpoints_ready;
 }
 
-// Send report data with the syntax specified by the target interface
-// report descriptors.
+// Send report data with the syntax specified by the target interface report descriptors.
 void send_report(uint8_t iface_num)
 {
 	// if endpoint configuration failed or usb configuration failed, do nothing
@@ -1005,7 +754,6 @@ void send_report(uint8_t iface_num)
 		const struct usb_interface *interface = &descriptors.interface[iface_num];
 		uint8_t address = pgm_read_byte(&(interface->hid[0].endpoint[0])) & 0xF;
 		uint8_t timeout = UDFNUML + (pgm_read_byte(&(interface->hid[0].endpoint[4])) * 4);
-		//leddebug(address, 1);
 
 		UENUM = address;
 
@@ -1054,19 +802,8 @@ void send_report(uint8_t iface_num)
 	
 			// "vendor" endpoint (communicates with software on host)
 			case VEN_INTERFACE:
-				//if (vendor_buffer.state & 1)
-				//{
-				//	for (uint8_t d = 0; d < 8; d++)
-				//	{UEDATX = vendor_buffer.data[d];}
-				//}
-
 				for (uint8_t b = 0; b < usb_debug.length; b++)
 				{UEDATX = usb_debug.buffer[b];}
-
-				//UEDATX = usb_debug.buffer[0];
-
-				//for (uint8_t b = 0; b < 8; b++)
-				//{UEDATX = usb_debug.buffer[0];}
 
 				break;
 		}
@@ -1088,7 +825,6 @@ void get_status(void)
 	UEDATX = 0;
 	// setting TXINI to 0 will handshake a IN packet
 	HANDSHAKE(TXINI);
-	//CLEAR_FIFOCON();
 }
 
 // This is the logic for resolving responses for SETUP packets
@@ -1125,7 +861,6 @@ void usb_setup(struct setup_packet *data0)
 						WAIT(TXINI);
 						UEDATX = usb_configuration;
 						HANDSHAKE(TXINI);
-						//CLEAR_FIFOCON();
 						return;
 
 					default:
